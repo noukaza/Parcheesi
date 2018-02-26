@@ -5,9 +5,6 @@ stages:
   - test
   - deploy
 
-only:
-  -master
-    
 build:
   stage: build
   script: 
