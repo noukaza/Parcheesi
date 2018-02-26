@@ -7,15 +7,12 @@ stages:
 
 build:
   stage: build
-  script: 
-    - echo "Building"
+  script: echo "Building"
 
 test:
   stage: test
-  script: 
-    - echo "Testing" 
+  script: echo "Testing" 
 
 deploy:
   stage: deploy
-  script: 
-    - echo "Deploying"
+  script: echo "Deploying"
