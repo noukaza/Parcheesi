@@ -6,14 +6,14 @@ import java.net.UnknownHostException;
 
 public class Connect {
 	private String address ;
-	private int prot;
+	private int port;
 	private Socket socket ;
 
-	public Connect(String address, int prot) {
+	public Connect(String address, int port) {
 		this.address = address;
-		this.prot = prot;
+		this.port = port;
 		try {
-			this.socket = new Socket(address, prot);
+			this.socket = new Socket(address, port);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
