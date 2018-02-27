@@ -5,15 +5,15 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class Connect {
-	private String HOST ;
-	private int PORT;
+	private String address ;
+	private int prot;
 	private Socket socket ;
 
-	public Connect(String HOST, int PORT) {
-		this.HOST = HOST;
-		this.PORT = PORT;
+	public Connect(String address, int prot) {
+		this.address = address;
+		this.prot = prot;
 		try {
-			Socket socket = new Socket(HOST, PORT);
+			this.socket = new Socket(address, prot);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
