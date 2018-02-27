@@ -11,19 +11,22 @@ public class ServerHandler implements Runnable {
 
 	public ServerHandler(Socket socket) {
 		this.socket = socket;
+		System.out.println(socket);
 		this.stop = false;
 	}
 
-	@Override
 	public void run() {
 		try {
 			Scanner userInput = new Scanner(System.in);
 			Scanner serverInput = new Scanner(socket.getInputStream());
-			PrintWriter serverOutput = new PrintWriter(socket.getOutputStream());
+			PrintWriter serverOutput = new PrintWriter(socket.getOutputStream(), true);
 			while (!stop) {
 				String line = userInput.nextLine();
+
 				serverOutput.println(line);
+
 				String serverResponse = serverInput.nextLine();
+
 				System.out.println(serverResponse);
 			}
 		} catch (IOException e) {

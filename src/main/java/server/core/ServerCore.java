@@ -30,9 +30,9 @@ public class ServerCore implements Runnable {
 			while (! stop) {
 				try {
 					Socket socket = serverSocket.accept();
+					System.out.println("User : " + socket);
 					// TODO write on logger that client has connected and write his socket details
 					new Thread(new ClientHandler(socket)).start();
-					//new Thread(new ClientHandler(socket, serverModel, logger)).start();
 				} catch (SocketTimeoutException ignored) {
 				}
 			}

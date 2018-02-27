@@ -17,15 +17,16 @@ public class ClientHandler implements Runnable {
 
 	public void run() {
 		try (Socket s = socket) {
-			Scanner scanner = new Scanner(s.getInputStream());
-			PrintWriter printWriter = new PrintWriter(s.getOutputStream());
+			Scanner clientInput = new Scanner(s.getInputStream());
+			PrintWriter clientOutput = new PrintWriter(s.getOutputStream(), true);
 			while (! stop) {
 				// get next line written by user
-				String line = scanner.nextLine();
-				// print it here
+				String line = clientInput.nextLine();
+
 				System.out.println(line);
+
 				// send him back something positive
-				printWriter.println("THANK YOU");
+				clientOutput.println("You said " + line + ", THANK YOU");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
