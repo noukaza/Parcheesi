@@ -1,8 +1,21 @@
 image: maven:3-jdk-8
 
-before_script:
-    - apt-get update
-    - apt-get install -y openjfx
+stages:
+  - build
+  - test
+  - deploy
 
 build:
-  script: "mvn clean package -B"
+  stage: build
+  script:
+    - mvn install -B
+  
+test:
+  stage: test
+  script:
+    - /bin/echo "here we will test the server and the client later seperatly"
+
+deploy :
+  stage: deploy
+  script:
+    - /bin/echo "here we will test the server and the client together"
