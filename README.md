@@ -30,6 +30,14 @@ To enter a public room
 
 To enter a private room, you need the right password
 
+	PLAY DICE
+
+To play the dice, this commande is used only when you are in game and its your turn
+
+	MOVE HORSE
+	[0-3]
+
+To move the chosen horse, if the horse can't move
 ### Output :
 
 
@@ -37,17 +45,19 @@ To enter a private room, you need the right password
 	NAME BAD
 	------------
 	ROOM ALREADY EXISTS
+	ROOM ERROR
 	ROOM CREATED
 	ROOM ENTERED
 	ROOM CLOSED
 	ROOM DOESNT EXIST
 	PASSWORD WRONG
+	BAD MOVE
 
 server sends accept or refuse messages 
 
 	ROOMS LIST
-	PUBLIC:room-name
-	PRIVATE:room-name
+	PUBLIC:room-name:[0-4]:[0~inf]
+	PRIVATE:room-name:[0-4]:[0~inf]
 	..
 	END
 
@@ -80,8 +90,7 @@ server returns dice result
 
 server notify everyone that player moved
 
-	PLAYER TURN
-	user-name
+	YOUR TURN
 
 server notify everyone who's turn
 	
