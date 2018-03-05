@@ -2,6 +2,7 @@ package client.core;
 
 import client.core.handler.ServerHandler;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -24,7 +25,7 @@ public class ClientCore implements Runnable {
 			serverHandler = new ServerHandler(this.socket);
 			new Thread(serverHandler).start();
 		} catch (IOException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Connection Error", e.getMessage(), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 

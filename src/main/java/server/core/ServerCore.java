@@ -13,13 +13,13 @@ public class ServerCore implements Runnable {
 	private ServerSocket serverSocket;
 	private boolean stop;
 
-	// TODO add server model
+	// TODO add server gui
 	// TODO add server logger
 
 	public ServerCore(int port) {
 		this.port = port;
 		// TODO initiate the logger
-		// TODO initiate the server model
+		// TODO initiate the server gui
 		// TODO that server is connecting on a port in the logger and its starting
 	}
 
@@ -42,7 +42,7 @@ public class ServerCore implements Runnable {
 	}
 
 	public synchronized void finish() {
-		// TODO empty the model and remove all players
+		// TODO empty the gui and remove all players
 		this.stop = true;
 	}
 }
