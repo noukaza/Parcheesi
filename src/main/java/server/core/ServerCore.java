@@ -2,6 +2,7 @@ package server.core;
 
 import server.core.handler.ClientHandler;
 import server.core.logger.IServerLogger;
+import server.core.util.model.ServerModel;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -12,15 +13,17 @@ public class ServerCore implements Runnable {
 
 	private int port;
 	private ServerSocket serverSocket;
+
 	private boolean stop;
 
-	// TODO add server gui
+	private ServerModel serverModel;
 	private IServerLogger serverLogger;
 
 	public ServerCore(int port) {
 		this.port = port;
-		serverLogger = new IServerLogger();
-		// TODO initiate the server gui
+		this.serverLogger = new IServerLogger();
+		this.serverModel = new ServerModel();
+		this.stop = false;
 
 		serverLogger.serverStarting(port);
 	}
@@ -43,8 +46,13 @@ public class ServerCore implements Runnable {
 	}
 
 	public synchronized void finish() {
-		// TODO empty the gui and remove all players
 		this.stop = true;
+		try {
+			serverModel.serverClosing();
+			serverSocket.close();
+		} catch (IOException e) {
+			serverLogger.systemMessage(e.getMessage());
+		}
 		serverLogger.serverClosing();
 	}
 }
