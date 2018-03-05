@@ -8,27 +8,15 @@ To choose your name in the server or to modify it.
 
 To get all the rooms from the server.
 
-	CREATE PUBLIC ROOM
+	CREATE ROOM
 	room-name
 
-To create a public room
+To create a room
 
-	CREATE PRIVATE ROOM
-	room-name
-	pass-word
-	
-TO create a private room
-
-	ENTER PUBLIC ROOM
+	ENTER ROOM
 	room-name
 
-To enter a public room
-
-	ENTER PRIVATE ROOM
-	room-name
-	pass-word
-
-To enter a private room, you need the right password
+To enter a  room
 
 	PLAY DICE
 
@@ -38,6 +26,21 @@ To play the dice, this commande is used only when you are in game and its your t
 	[0-3]
 
 To move the chosen horse, if the horse can't move
+	
+	EXIT ROOM
+	
+To exite a room
+
+	DISCONNECT
+	
+To disconnect
+
+	START GAME
+	
+To start the game only the admin can start the game 
+
+	
+ 
 ### Output :
 
 
@@ -50,14 +53,20 @@ To move the chosen horse, if the horse can't move
 	ROOM ENTERED
 	ROOM CLOSED
 	ROOM DOESNT EXIST
-	PASSWORD WRONG
 	BAD MOVE
+	-------------
+	ROOM EXITED
+	GOOD BYE
+	-------------
+	WELCOM TO ROOM 
+	WELCOM TO ROOM SPECTATOR
+	GAME STARTED
+	
 
 server sends accept or refuse messages 
 
 	ROOMS LIST
-	PUBLIC:room-name:[0-4]:[0~inf]
-	PRIVATE:room-name:[0-4]:[0~inf]
+	room-name:[0-4]:[0~inf]
 	..
 	END
 
@@ -98,3 +107,5 @@ server notify everyone who's turn
 	user-name
 
 server sends which player won
+
+	
