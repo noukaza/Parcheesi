@@ -1,6 +1,8 @@
 package server.core;
 
 import server.core.handler.ClientHandler;
+import server.core.logger.IServerLogger;
+import server.core.util.model.ServerModel;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -11,16 +13,19 @@ public class ServerCore implements Runnable {
 
 	private int port;
 	private ServerSocket serverSocket;
+
 	private boolean stop;
 
-	// TODO add server gui
-	// TODO add server logger
+	private ServerModel serverModel;
+	private IServerLogger serverLogger;
 
 	public ServerCore(int port) {
 		this.port = port;
-		// TODO initiate the logger
-		// TODO initiate the server gui
-		// TODO that server is connecting on a port in the logger and its starting
+		this.serverLogger = new IServerLogger();
+		this.serverModel = new ServerModel();
+		this.stop = false;
+
+		serverLogger.serverStarting(port);
 	}
 
 	public void run() {
@@ -30,19 +35,24 @@ public class ServerCore implements Runnable {
 			while (! stop) {
 				try {
 					Socket socket = serverSocket.accept();
-					System.out.println("User : " + socket);
-					// TODO write on logger that client has connected and write his socket details
-					new Thread(new ClientHandler(socket)).start();
+					serverLogger.clientConnected(socket.getInetAddress().toString());
+					new Thread(new ClientHandler(socket, serverLogger)).start();
 				} catch (SocketTimeoutException ignored) {
 				}
 			}
 		} catch (IOException e) {
-			// TODO write on logger that we couldn't open the server on the chosen port
+			serverLogger.systemMessage(e.getMessage());
 		}
 	}
 
 	public synchronized void finish() {
-		// TODO empty the gui and remove all players
 		this.stop = true;
+		try {
+			serverModel.serverClosing();
+			serverSocket.close();
+		} catch (IOException e) {
+			serverLogger.systemMessage(e.getMessage());
+		}
+		serverLogger.serverClosing();
 	}
 }
