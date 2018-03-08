@@ -3,6 +3,7 @@ package server.core.handler;
 import server.core.handler.io.ServerInput;
 import server.core.handler.io.ServerOutput;
 import server.core.logger.IServerLogger;
+import server.core.model.ServerModel;
 import server.core.player.Player;
 import server.core.util.event.ServerModelEvents;
 import server.core.util.exception.ServerProtocolException;
@@ -29,6 +30,12 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 	 * The server logger to writing all whats going on the server
 	 */
 	private IServerLogger serverLogger;
+
+	/**
+	 * the server model to interact with it
+	 */
+	private ServerModel serverModel;
+
 	/**
 	 * client paramaters we need to controle his behaviors
 	 */
@@ -40,8 +47,9 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 	 */
 	private Player player;
 
-	public ClientHandler(Socket socket, IServerLogger serverLogger /*TODO add ServerModel*/) {
+	public ClientHandler(Socket socket, IServerLogger serverLogger, ServerModel serverModel) {
 		this.serverLogger = serverLogger;
+		this.serverModel = serverModel;
 		this.socket = socket;
 		this.stop = false;
 		this.clientState = ClientState.ST_INIT;
@@ -65,14 +73,18 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 	@Override
 	public void commandeName(String name) {
 		if (clientState == ClientState.ST_INIT) {
-			// TODO check if his name already exists
-			// TODO if his name already exists send an output NAME BAD
-			// TODO else player = new Player(name);
-			// clientState = ClientState.ST_NAVIGATOR;
+			if (serverModel.registerUser(name, this)) {
+				player = new Player(name);
+				clientState = ClientState.ST_NAVIGATOR;
+			} else {
+				// TODO send him NAME BAD
+			}
 		} else {
-			// TODO check if his name already exists
-			// TODO if his name already exists send an output NAME BAD
-			// TODO else player.setName(name);
+			if (serverModel.changeUserName(player.getName(), name, this)) {
+				player.setName(name);
+			} else {
+				// TODO if his name already exists send an output NAME BAD
+			}
 		}
 	}
 

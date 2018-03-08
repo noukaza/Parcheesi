@@ -1,5 +1,7 @@
 package server.core.player;
 
+import server.core.model.room.ServerGameRoom;
+
 public class Player {
 
 	private static final int NUM_HORSES = 4;
@@ -11,13 +13,14 @@ public class Player {
 
 	private int dice;
 	private int[] horses;
-	// TODO add the room
+	private ServerGameRoom room;
 
 	public Player(String name) {
 		this.name = name;
 		this.turn = false;
 		this.roll = false;
 		this.dice = 0;
+		this.room = null;
 		this.horses = new int[NUM_HORSES];
 	}
 
@@ -57,6 +60,10 @@ public class Player {
 		this.dice = dice;
 	}
 
+	public int getDice() {
+		return dice;
+	}
+
 	public void moveHorse(int index, int value) {
 		this.horses[index] = value;
 	}
@@ -67,5 +74,13 @@ public class Player {
 
 	public int[] getHorses() {
 		return horses;
+	}
+
+	public ServerGameRoom getRoom() {
+		return room;
+	}
+
+	public void setRoom(ServerGameRoom room) {
+		this.room = room;
 	}
 }
