@@ -36,7 +36,7 @@ public class ServerCore implements Runnable {
 				try {
 					Socket socket = serverSocket.accept();
 					serverLogger.clientConnected(socket.getInetAddress().toString());
-					new Thread(new ClientHandler(socket, serverLogger)).start();
+					new Thread(new ClientHandler(socket, serverLogger, serverModel)).start();
 				} catch (SocketTimeoutException ignored) {
 				}
 			}
