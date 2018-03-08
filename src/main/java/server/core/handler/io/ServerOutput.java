@@ -4,6 +4,7 @@ import server.core.util.protocol.ServerOutputProtocol;
 
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.List;
 
 public class ServerOutput implements ServerOutputProtocol {
 
@@ -21,5 +22,27 @@ public class ServerOutput implements ServerOutputProtocol {
 	@Override
 	public void nameOk() {
 		out.println("NAME OK");
+	}
+
+	@Override
+	public void roomError() {
+		out.println("ROOM ERROR");
+	}
+
+	@Override
+	public void roomCreated() {
+		out.println("ROOM CREATED");
+	}
+
+	@Override
+	public void roomDoesntExist() {
+		out.println("ROOM DOESNT EXIST");
+	}
+
+	@Override
+	public void roomList(List<String> rooms) {
+		out.println("ROOMS LIST");
+		rooms.forEach(out:: println);
+		out.println("END");
 	}
 }

@@ -11,6 +11,7 @@ import server.core.util.protocol.ServerInputProtocol;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.List;
 
 public class ClientHandler implements Runnable, ServerInputProtocol, ServerModelEvents {
 
@@ -88,15 +89,20 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 	@Override
 	public void commandeRoomList() {
 		if (clientState == ClientState.ST_NAVIGATOR) {
-			// TODO check the model and get all the rooms
-			// TODO output him the rooms list
+			List<String> list = serverModel.getAllRooms();
+			clientOutput.roomList(list);
 		}
 	}
 
 	@Override
 	public void commandeCreateRoom(String name) {
 		if (clientState == ClientState.ST_NAVIGATOR) {
-			// TODO check the model if this room doesn't already exist
+			if (serverModel.createRoom(name, this)) {
+				clientState = ClientState.ST_PLAYER;
+				clientOutput.roomCreated();
+			} else {
+				clientOutput.roomError();
+			}
 		}
 	}
 
@@ -153,6 +159,10 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 			// TODO remove the player from the model
 		}
 		serverLogger.clientDisconnected(socket.getLocalSocketAddress().toString(), player.getName());
+	}
+
+	public Player getPlayer() {
+		return player;
 	}
 
 	public enum ClientState {
