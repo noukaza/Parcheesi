@@ -69,14 +69,18 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 			if (serverModel.registerUser(name, this)) {
 				player = new Player(name);
 				clientState = ClientState.ST_NAVIGATOR;
+				serverLogger.clientGotName(socket.getLocalSocketAddress().toString(), name);
+				clientOutput.nameOk();
 			} else {
-				// TODO send him NAME BAD
+				clientOutput.nameBad();
 			}
 		} else {
 			if (serverModel.changeUserName(player.getName(), name, this)) {
 				player.setName(name);
+				serverLogger.clientGotName(socket.getLocalSocketAddress().toString(), name);
+				clientOutput.nameOk();
 			} else {
-				// TODO if his name already exists send an output NAME BAD
+				clientOutput.nameBad();
 			}
 		}
 	}

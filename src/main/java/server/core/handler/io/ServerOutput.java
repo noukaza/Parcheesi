@@ -12,4 +12,14 @@ public class ServerOutput implements ServerOutputProtocol {
 	public ServerOutput(OutputStream outputStream) {
 		this.out = new PrintWriter(outputStream, true);
 	}
+
+	@Override
+	public void nameBad() {
+		out.println("NAME BAD");
+	}
+
+	@Override
+	public void nameOk() {
+		out.println("NAME OK");
+	}
 }
