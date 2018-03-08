@@ -34,37 +34,43 @@ public class ServerInput {
 	}
 
 	public void doRun() throws IOException, ServerProtocolException {
+		String name;
+		int horse;
 		stop = false;
 		try (BufferedReader buffer = new BufferedReader(new InputStreamReader(in))) {
 			while (! stop) {
 				String header = buffer.readLine();
 				switch (header) {
 					case NAME:
-						// TODO here
+						name = buffer.readLine();
+						handler.commandeName(name);
 						break;
 					case ROOMS_LIST:
-						// TODO here
+						handler.commandeRoomList();
 						break;
 					case CREATE_ROOM:
-						// TODO here
+						name = buffer.readLine();
+						handler.commandeCreateRoom(name);
 						break;
 					case ENTER_ROOM:
-						// TODO here
+						name = buffer.readLine();
+						handler.commandeEnterRoom(name);
 						break;
 					case EXIT_ROOM:
-						// TODO here
+						handler.commandeExitRoom();
 						break;
 					case START_GAME:
-						// TODO here
+						handler.commandeStartGame();
 						break;
 					case PLAY_DICE:
-						// TODO here
+						handler.commandePlayDice();
 						break;
 					case MOVE_HORSE:
-						// TODO here
+						horse = Integer.parseInt(buffer.readLine());
+						handler.commandeMoveTheHorse(horse);
 						break;
 					case EXIT_SERVER:
-						// TODO here
+						handler.commandeDisconnect();
 						break;
 					default:
 						throw new ServerProtocolException("Invalid Commande :" + header);

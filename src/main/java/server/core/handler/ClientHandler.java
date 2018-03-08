@@ -22,11 +22,6 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 	private ServerOutput clientOutput;
 
 	/**
-	 * To controle wether we are handling this client or we stop
-	 */
-	private boolean stop;
-
-	/**
 	 * The server logger to writing all whats going on the server
 	 */
 	private IServerLogger serverLogger;
@@ -51,7 +46,6 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 		this.serverLogger = serverLogger;
 		this.serverModel = serverModel;
 		this.socket = socket;
-		this.stop = false;
 		this.clientState = ClientState.ST_INIT;
 		this.player = null;
 	}
@@ -63,8 +57,7 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 			clientInput.doRun();
 		} catch (IOException e) {
 			serverLogger.systemMessage(e.getMessage());
-			if (! stop)
-				finish();
+			finish();
 		} catch (ServerProtocolException e) {
 			serverLogger.systemMessage(e.getMessage());
 		}
@@ -146,17 +139,16 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 	}
 
 	private synchronized void finish() {
-		if (! stop) {
-			stop = true;
-			try {
-				socket.close();
-			} catch (IOException e) {
-				serverLogger.systemMessage(e.getMessage());
-			}
-			if (player != null)
-				// TODO remove the player from the model
-				serverLogger.clientDisconnected(socket.getLocalSocketAddress().toString(), player.getName());
+		clientInput.stop();
+		try {
+			socket.close();
+		} catch (IOException e) {
+			serverLogger.systemMessage(e.getMessage());
 		}
+		if (player != null) {
+			// TODO remove the player from the model
+		}
+		serverLogger.clientDisconnected(socket.getLocalSocketAddress().toString(), player.getName());
 	}
 
 	public enum ClientState {
