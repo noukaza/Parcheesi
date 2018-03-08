@@ -2,7 +2,7 @@ package server.core;
 
 import server.core.handler.ClientHandler;
 import server.core.logger.IServerLogger;
-import server.core.util.model.ServerModel;
+import server.core.model.ServerModel;
 
 import java.io.IOException;
 import java.net.ServerSocket;
