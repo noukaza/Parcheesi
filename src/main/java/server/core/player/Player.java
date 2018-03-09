@@ -2,6 +2,8 @@ package server.core.player;
 
 import server.core.model.room.ServerGameRoom;
 
+import java.util.Arrays;
+
 public class Player {
 
 	private static final int NUM_HORSES = 4;
@@ -22,6 +24,18 @@ public class Player {
 		this.dice = 0;
 		this.room = null;
 		this.horses = new int[NUM_HORSES];
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		if (obj.getClass() != this.getClass())
+			return false;
+		Player that = (Player) obj;
+		return that.name.equals(this.name)
+				&& that.room.equals(this.room)
+				&& Arrays.equals(that.horses, this.horses);
 	}
 
 	public String getName() {

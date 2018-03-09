@@ -40,6 +40,16 @@ public class ServerOutput implements ServerOutputProtocol {
 	}
 
 	@Override
+	public void roomEnteredPlayer() {
+		out.println("ROOM ENTERED PLAYER");
+	}
+
+	@Override
+	public void roomEnteredSpectator() {
+		out.println("ROOM ENTERED SPECTATOR");
+	}
+
+	@Override
 	public void roomList(List<String> rooms) {
 		out.println("ROOMS LIST");
 		rooms.forEach(out:: println);

@@ -38,7 +38,7 @@ public class IServerLogger implements Logger {
 	}
 
 	@Override
-	public void clientCreatedPublicRoom(String ip, String name, String roomName) {
+	public void clientCreatedRoom(String ip, String name, String roomName) {
 		System.out.println("client: [" + ip + "] " + name + ", created: " + roomName);
 	}
 

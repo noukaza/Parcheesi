@@ -6,6 +6,7 @@ import server.core.logger.IServerLogger;
 import server.core.model.ServerModel;
 import server.core.player.Player;
 import server.core.util.event.ServerModelEvents;
+import server.core.util.exception.ClientLeftException;
 import server.core.util.exception.ServerProtocolException;
 import server.core.util.protocol.ServerInputProtocol;
 
@@ -51,12 +52,24 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 		this.player = null;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		if (obj.getClass() != this.getClass())
+			return false;
+		ClientHandler that = (ClientHandler) obj;
+		return that.player.equals(this.player)
+				&& that.socket.equals(this.socket)
+				&& that.clientState.equals(this.clientState);
+	}
+
 	public void run() {
 		try (Socket s = socket) {
 			clientInput = new ServerInput(this, s.getInputStream());
 			clientOutput = new ServerOutput(s.getOutputStream());
 			clientInput.doRun();
-		} catch (IOException e) {
+		} catch (IOException | ClientLeftException e) {
 			serverLogger.systemMessage(e.getMessage());
 			finish();
 		} catch (ServerProtocolException e) {
@@ -100,6 +113,9 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 			if (serverModel.createRoom(name, this)) {
 				clientState = ClientState.ST_PLAYER;
 				clientOutput.roomCreated();
+				clientOutput.roomEnteredPlayer();
+				serverLogger.clientCreatedRoom(socket.getInetAddress().toString(), player.getName(), name);
+				serverLogger.clientEnteredRoom(socket.getInetAddress().toString(), player.getName(), name);
 			} else {
 				clientOutput.roomError();
 			}
@@ -109,35 +125,43 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 	@Override
 	public void commandeEnterRoom(String name) {
 		if (clientState == ClientState.ST_NAVIGATOR) {
-			// TODO check the model if this room exist
+			if (serverModel.entreRoom(player.getName(), name, this)) {
+				if (clientState == ClientState.ST_PLAYER) {
+					clientOutput.roomEnteredPlayer();
+				} else {
+					clientOutput.roomEnteredSpectator();
+				}
+			} else {
+				clientOutput.roomDoesntExist();
+			}
 		}
 	}
 
 	@Override
 	public void commandePlayDice() {
 		if (clientState == ClientState.ST_PLAYER && player.canRollDice()) {
-
+			// todo play the dice
 		}
 	}
 
 	@Override
 	public void commandeMoveTheHorse(int horse) {
 		if (clientState == ClientState.ST_PLAYER && player.canPlay()) {
-
+			// todo move the horse chosen
 		}
 	}
 
 	@Override
 	public void commandeExitRoom() {
 		if (clientState == ClientState.ST_PLAYER || clientState == ClientState.ST_SPECTATOR) {
-
+			// todo exit the room
 		}
 	}
 
 	@Override
 	public void commandeDisconnect() {
 		if (clientState != ClientState.ST_INIT) {
-
+			// todo disconnect
 		}
 	}
 
@@ -156,13 +180,29 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 			serverLogger.systemMessage(e.getMessage());
 		}
 		if (player != null) {
-			// TODO remove the player from the model
+			//TODO serverModel.
 		}
 		serverLogger.clientDisconnected(socket.getLocalSocketAddress().toString(), player.getName());
 	}
 
 	public Player getPlayer() {
 		return player;
+	}
+
+	public void setClientState(ClientState clientState) {
+		this.clientState = clientState;
+	}
+
+	public synchronized boolean isSpectator() {
+		return clientState == ClientState.ST_SPECTATOR;
+	}
+
+	public synchronized boolean isNavigator() {
+		return clientState == ClientState.ST_NAVIGATOR;
+	}
+
+	public synchronized boolean isPlayer() {
+		return clientState == ClientState.ST_PLAYER;
 	}
 
 	public enum ClientState {

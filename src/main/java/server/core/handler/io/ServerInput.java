@@ -1,6 +1,7 @@
 package server.core.handler.io;
 
 import server.core.handler.ClientHandler;
+import server.core.util.exception.ClientLeftException;
 import server.core.util.exception.ServerProtocolException;
 
 import java.io.BufferedReader;
@@ -33,13 +34,16 @@ public class ServerInput {
 		this.handler = handler;
 	}
 
-	public void doRun() throws IOException, ServerProtocolException {
+	public void doRun() throws IOException, ServerProtocolException, ClientLeftException {
 		String name;
 		int horse;
 		stop = false;
 		try (BufferedReader buffer = new BufferedReader(new InputStreamReader(in))) {
 			while (! stop) {
 				String header = buffer.readLine();
+				if (header == null) {
+					throw new ClientLeftException("client left without saying goodbye");
+				}
 				switch (header) {
 					case NAME:
 						name = buffer.readLine();

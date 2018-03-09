@@ -16,7 +16,7 @@ public interface Logger {
 
 	void clientGotName(String ip, String name);
 
-	void clientCreatedPublicRoom(String ip, String name, String roomName);
+	void clientCreatedRoom(String ip, String name, String roomName);
 
 	void clientEnteredRoom(String ip, String name, String roomName);
 

@@ -50,7 +50,8 @@ To start the game only the admin can start the game
 	ROOM ALREADY EXISTS
 	ROOM ERROR
 	ROOM CREATED
-	ROOM ENTERED
+	ROOM ENTERED PLAYER
+	ROOM ENTERED SPECTATOR
 	ROOM CLOSED
 	ROOM DOESNT EXIST
 	BAD MOVE
@@ -58,8 +59,6 @@ To start the game only the admin can start the game
 	ROOM EXITED
 	GOOD BYE
 	-------------
-	WELCOM TO ROOM 
-	WELCOM TO ROOM SPECTATOR
 	GAME STARTED
 	
 

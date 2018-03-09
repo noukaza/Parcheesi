@@ -27,6 +27,21 @@ public class ServerModel implements ServerGameRoomEvents {
 		return false;
 	}
 
+	public synchronized void unregisterUser(String name, ClientHandler clientHandler) {
+		if (existUserName(name)) {
+			ServerGameRoom room = clientHandler.getPlayer().getRoom();
+			if (room != null) {
+				if (clientHandler.isPlayer()) {
+					room.removePlayer(clientHandler);
+				} else if (clientHandler.isSpectator()) {
+					room.removeSpectator(clientHandler);
+				}
+			}
+			this.usersList.remove(name);
+			// TODO notify navigators that rooms status has changed
+		}
+	}
+
 	public synchronized boolean changeUserName(String oldName, String newName, ClientHandler clientHandler) {
 		if (existUserName(oldName) && ! existUserName(newName)) {
 			usersList.remove(oldName);
@@ -42,6 +57,21 @@ public class ServerModel implements ServerGameRoomEvents {
 			ServerGameRoom room = this.serverRooms.put(name, new ServerGameRoom(this, admine));
 			admine.getPlayer().setRoom(room);
 			// TODO notify new room
+			return true;
+		}
+		return false;
+	}
+
+	public synchronized boolean entreRoom(String userName, String roomName, ClientHandler clientHandler) {
+		if (existRoomName(roomName) && existUserName(userName)) {
+			ServerGameRoom room = serverRooms.get(roomName);
+			if (room.addPlayer(clientHandler)) {
+				clientHandler.setClientState(ClientHandler.ClientState.ST_PLAYER);
+				//TODO notify all people in room the same room that a new player came
+			} else {
+				clientHandler.setClientState(ClientHandler.ClientState.ST_SPECTATOR);
+
+			}
 			return true;
 		}
 		return false;
