@@ -8,7 +8,6 @@ import java.util.Scanner;
 public class ServerHandler implements Runnable {
 	private Socket socket;
 	private boolean stop;
-
 	public ServerHandler(Socket socket) {
 		this.socket = socket;
 		System.out.println(socket);
