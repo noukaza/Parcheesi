@@ -10,6 +10,7 @@ public class ClientOutput {
     public ClientOutput(OutputStream outputStream) {
         this.out = new PrintWriter(outputStream, true);
     }
+
     public void sendName(String name) {
         out.println("NAME");
         out.println(name);

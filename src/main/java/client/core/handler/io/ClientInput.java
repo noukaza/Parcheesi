@@ -36,6 +36,9 @@ public class ClientInput {
     private InputStream in;
     private boolean connected;
 
+    public ClientInput(InputStream in) {
+        this.in = in;
+    }
 
     public void doRun() throws Exception, ClientProtocolException {
 
@@ -105,7 +108,7 @@ public class ClientInput {
                         //TODO ..
                         break;
                     case GOOD_BYE:
-                        //TODO ..
+                        goodBye();
                         break;
                     default:
                         throw new ClientProtocolException("Invalid Commande :" + header);
@@ -113,6 +116,11 @@ public class ClientInput {
             }
         }
     }
+
+    public void goodBye() {
+        this.connected = true;
+    }
+
 
 
 
