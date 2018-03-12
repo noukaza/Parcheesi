@@ -102,7 +102,7 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 
 	@Override
 	public void commandeRoomList() {
-		if (clientState == ClientState.ST_NAVIGATOR) {
+		if (this.isNavigator()) {
 			List<String> list = serverModel.getAllRoomsStatus();
 			clientOutput.roomList(list);
 		}
@@ -110,7 +110,7 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 
 	@Override
 	public void commandeCreateRoom(String name) {
-		if (clientState == ClientState.ST_NAVIGATOR) {
+		if (this.isNavigator()) {
 			if (serverModel.createRoom(name, this)) {
 				clientState = ClientState.ST_PLAYER;
 				clientOutput.roomCreated();
@@ -125,7 +125,7 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 
 	@Override
 	public void commandeEnterRoom(String name) {
-		if (clientState == ClientState.ST_NAVIGATOR) {
+		if (this.isNavigator()) {
 			if (serverModel.entreRoom(player.getName(), name, this)) {
 				if (clientState == ClientState.ST_PLAYER) {
 					clientOutput.roomEnteredPlayer();
@@ -140,21 +140,21 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 
 	@Override
 	public void commandePlayDice() {
-		if (clientState == ClientState.ST_PLAYER && player.canRollDice()) {
+		if (this.isPlayer() && player.canRollDice()) {
 			// todo play the dice
 		}
 	}
 
 	@Override
 	public void commandeMoveTheHorse(int horse) {
-		if (clientState == ClientState.ST_PLAYER && player.canPlay()) {
+		if (this.isPlayer() && player.canPlay()) {
 			// todo move the horse chosen
 		}
 	}
 
 	@Override
 	public void commandeExitRoom() {
-		if (clientState == ClientState.ST_PLAYER || clientState == ClientState.ST_SPECTATOR) {
+		if (this.isPlayer() || this.isSpectator()) {
 			// todo exit the room
 		}
 	}
@@ -168,7 +168,7 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 
 	@Override
 	public void commandeStartGame() {
-		if (clientState == ClientState.ST_PLAYER) {
+		if (this.isPlayer()) {
 			// TODO check if he's an admin and there is at least two players
 		}
 	}
@@ -184,6 +184,67 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 			//TODO serverModel.
 		}
 		serverLogger.clientDisconnected(socket.getLocalSocketAddress().toString(), player.getName());
+	}
+
+	@Override
+	public void notifyRoomStatusChanged(List<String> roomsStatus) {
+		if (this.isNavigator()) {
+			clientOutput.roomList(roomsStatus);
+		}
+	}
+
+	@Override
+	public void notifyShutdownRequested() {
+		// TODO maybe clean stuff here before you close
+		clientOutput.serverOff();
+	}
+
+	@Override
+	public void notifyGameStarted() {
+		//TODO game started
+	}
+
+	@Override
+	public void notifyPlayersListChanged(List<String> players) {
+		if (this.isPlayer() || this.isSpectator())
+			clientOutput.playersList(players);
+	}
+
+	@Override
+	public void notifySpectatorsNumberChanged(int spectators) {
+		if (this.isPlayer() || this.isSpectator())
+			clientOutput.spectatorsNumber(spectators);
+	}
+
+	@Override
+	public void notifyDiceResult(String player, int dice) {
+		if (this.isPlayer() || this.isSpectator())
+			clientOutput.diceResult(player, dice);
+	}
+
+	@Override
+	public void notifyRoomClosed() {
+		if (this.isPlayer() || this.isSpectator())
+			clientOutput.roomClosed();
+		// todo check that i'm no longer in a room
+	}
+
+	@Override
+	public void notifyPlayerTurn(String player) {
+		if (this.isPlayer() || this.isSpectator())
+			clientOutput.playerTurn(player);
+	}
+
+	@Override
+	public void notifyGameStatusChanged(List<String> lines) {
+		if (this.isPlayer() || this.isSpectator())
+			clientOutput.gameUpdate(lines);
+	}
+
+	@Override
+	public void notifyWinnerIs(String player) {
+		if (this.isPlayer() || this.isSpectator())
+			clientOutput.winnerIs(player);
 	}
 
 	public Player getPlayer() {
@@ -204,19 +265,6 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 
 	public synchronized boolean isPlayer() {
 		return clientState == ClientState.ST_PLAYER;
-	}
-
-	@Override
-	public void roomStatusChanged(List<String> roomsStatus) {
-		if (clientState == ClientState.ST_NAVIGATOR) {
-			clientOutput.roomList(roomsStatus);
-		}
-	}
-
-	@Override
-	public void shutdownRequested() {
-		// TODO maybe clean stuff here before you close
-		clientOutput.serverOff();
 	}
 
 	public enum ClientState {

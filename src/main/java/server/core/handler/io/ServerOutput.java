@@ -35,6 +35,11 @@ public class ServerOutput implements ServerOutputProtocol {
 	}
 
 	@Override
+	public void roomClosed() {
+		out.println("ROOM CLOSED");
+	}
+
+	@Override
 	public void roomDoesntExist() {
 		out.println("ROOM DOESNT EXIST");
 	}
@@ -64,15 +69,15 @@ public class ServerOutput implements ServerOutputProtocol {
 	}
 
 	@Override
-	public void spectatorsList(List<String> spectators) {
+	public void spectatorsNumber(int spectators) {
 		out.println("SPECTATORS LIST");
-		spectators.forEach(out:: println);
-		out.println("END");
+		out.println(spectators);
 	}
 
 	@Override
-	public void diceResult(int value) {
+	public void diceResult(String player, int value) {
 		out.println("DICE RESULT");
+		out.println(player);
 		out.println(value);
 	}
 
@@ -84,8 +89,14 @@ public class ServerOutput implements ServerOutputProtocol {
 	}
 
 	@Override
-	public void yourTurn() {
-		out.println("YOUR TURN");
+	public void playerTurn(String player) {
+		out.println("PLAYER TURN");
+		out.println(player);
+	}
+
+	@Override
+	public void gameStarted() {
+		out.println("GAME STARTED");
 	}
 
 	@Override

@@ -65,7 +65,8 @@ To start the game only the admin can start the game
 server sends accept or refuse messages 
 
 	ROOMS LIST
-	room-name:[0-4]:[0~inf]
+	room-name
+	[0-4]:[0~inf]
 	..
 	END
 
@@ -73,17 +74,16 @@ server sends rooms list
 
 	PLAYERS LIST
 	user-name
+	[PLAYER|ADMINE]
 	..
 	END
 
 server sends players list
 
-	SPECTATORS LIST
-	user-name
-	..
-	END
+	SPECTATORS NUMBER
+	[0-inf]
 	
-server sends spectators list
+server sends spectators number
 
 	DICE RESULT
 	[1-6]
@@ -93,11 +93,13 @@ server returns dice result
 	GAME UPDATE
 	user-name
 	[0-63]:[0-63]:[0-63]:[0-63]
+	..
 	END
 
 server notify everyone that player moved
 
-	YOUR TURN
+	PLAYER TURN
+	player-name
 
 server notify everyone who's turn
 	
@@ -110,4 +112,7 @@ server sends which player won
 
 server sends notification when it closes
 
+	WRONG MOVE
+
+server sends this when the player does a wrong move
 	

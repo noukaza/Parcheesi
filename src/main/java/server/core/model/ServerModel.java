@@ -29,7 +29,7 @@ public class ServerModel {
 	private void notifyRoomStatusChanged() {
 		List<String> statusList = getAllRoomsStatus();
 		for (ClientHandler user : usersList.values())
-			user.roomStatusChanged(statusList);
+			user.notifyRoomStatusChanged(statusList);
 	}
 
 	public synchronized void unregisterUser(String name, ClientHandler clientHandler) {
@@ -87,13 +87,11 @@ public class ServerModel {
 		ArrayList<String> rooms = new ArrayList<>();
 		for (String roomName : serverRooms.keySet()) {
 			ServerGameRoom room = serverRooms.get(roomName);
-			StringBuilder line = new StringBuilder();
-			line.append(roomName)
-					.append(":")
-					.append(room.getPlayers().size())
-					.append(":")
-					.append(room.getSpectators().size());
-			rooms.add(line.toString());
+			String status = room.getPlayers().size() +
+					":" +
+					room.getSpectators().size();
+			rooms.add(roomName);
+			rooms.add(status);
 		}
 		return rooms;
 	}
@@ -108,7 +106,7 @@ public class ServerModel {
 
 	public synchronized void serverClosing() {
 		for (ClientHandler user : usersList.values())
-			user.shutdownRequested();
+			user.notifyShutdownRequested();
 	}
 
 }

@@ -38,6 +38,13 @@ public interface ServerOutputProtocol {
 	void roomCreated();
 
 	/**
+	 * Means that the room is closed
+	 * <p>
+	 * ROOM CLOSED
+	 */
+	void roomClosed();
+
+	/**
 	 * Means that the room doesn't exist if you're trying to entre it
 	 *
 	 * ROOM DOESNT EXIST
@@ -66,7 +73,8 @@ public interface ServerOutputProtocol {
 	 * including the number of players and spectators
 	 *
 	 * ROOMS LIST
-	 * room-name:[0-4]:[0~inf]
+	 * room-name
+	 * [0-4]:[0~inf]
 	 * ..
 	 * END
 	 *
@@ -89,25 +97,25 @@ public interface ServerOutputProtocol {
 	/**
 	 * A Response with all the existing spectators in a room
 	 *
-	 * SPECTATORS LIST
-	 * user-name
-	 * ..
-	 * END
+	 * SPECTATORS NUMBER
+	 * [0-inf]
 	 *
-	 * @param spectators all the players in the room
+	 * @param spectators number of spectators
 	 */
-	void spectatorsList(List<String> spectators);
+	void spectatorsNumber(int spectators);
 
 
 	/**
 	 * A Response with the result of a player dice
 	 *
 	 * DICE RESULT
+	 * player-name
 	 * [1-6]
 	 *
+	 * @param player name
 	 * @param value of the played dice
 	 */
-	void diceResult(int value);
+	void diceResult(String player, int value);
 
 	/**
 	 * The game notification to all players and spectators
@@ -124,14 +132,22 @@ public interface ServerOutputProtocol {
 
 	/**
 	 * The game notification to the player who needs to play
-	 * <p>
+	 *
 	 * YOUR TURN
+	 *
 	 */
-	void yourTurn();
+	void playerTurn(String player);
+
+	/**
+	 * The game notification that the game has started
+	 * <p>
+	 * GAME STARTED
+	 */
+	void gameStarted();
 
 	/**
 	 * The game notification to the player who won
-	 * <p>
+	 *
 	 * WINNER IS
 	 * user-name
 	 *
@@ -141,8 +157,9 @@ public interface ServerOutputProtocol {
 
 	/**
 	 * Server notification when it closes
-	 * <p>
+	 *
 	 * SERVER OFF
+	 *
 	 */
 	void serverOff();
 }

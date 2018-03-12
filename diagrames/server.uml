@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="224.0" y="0.0">server.core.model.room.ServerGameRoom</node>
+    <node x="0.0" y="189.0">server.core.logger.IServerLogger</node>
+    <node x="29.5" y="97.0">server.core.player.Player</node>
+    <node x="228.0" y="189.0">server.core.handler.io.ServerOutput</node>
+    <node x="206.0" y="373.0">server.core.ServerCore</node>
+    <node x="218.0" y="281.0">server.core.handler.io.ServerInput</node>
+    <node x="0.0" y="373.0">server.ServerMain</node>
+    <node x="0.0" y="0.0">server.core.handler.ClientHandler</node>
+    <node x="0.0" y="281.0">server.core.model.ServerModel</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="server.core.player.Player" target="server.core.handler.ClientHandler">
+      <point x="0.0" y="-23.5" />
+      <point x="0.0" y="23.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="458.5" y="-28.5" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
