@@ -57,6 +57,7 @@ public interface ServerOutputProtocol {
 	 * Means that you have succesfully entered a the room as a spectator
 	 *
 	 * ROOM ENTERED SPECTATOR
+	 *
 	 */
 	void roomEnteredSpectator();
 
@@ -75,7 +76,7 @@ public interface ServerOutputProtocol {
 
 	/**
 	 * A Response with all the existing players in a room
-	 * <p>
+	 *
 	 * PLAYERS LIST
 	 * user-name
 	 * ..
@@ -87,20 +88,20 @@ public interface ServerOutputProtocol {
 
 	/**
 	 * A Response with all the existing spectators in a room
-	 * <p>
+	 *
 	 * SPECTATORS LIST
 	 * user-name
 	 * ..
 	 * END
 	 *
-	 * @param players all the players in the room
+	 * @param spectators all the players in the room
 	 */
-	void spectatorsList(List<String> players);
+	void spectatorsList(List<String> spectators);
 
 
 	/**
 	 * A Response with the result of a player dice
-	 * <p>
+	 *
 	 * DICE RESULT
 	 * [1-6]
 	 *
@@ -110,10 +111,9 @@ public interface ServerOutputProtocol {
 
 	/**
 	 * The game notification to all players and spectators
-	 * <p>
+	 *
 	 * GAME UPDATE
 	 * user-name
-	 * 0:1:2:3
 	 * [0-63]:[0-63]:[0-63]:[0-63]
 	 * ...
 	 * END
@@ -121,4 +121,28 @@ public interface ServerOutputProtocol {
 	 * @param lines update lines
 	 */
 	void gameUpdate(List<String> lines);
+
+	/**
+	 * The game notification to the player who needs to play
+	 * <p>
+	 * YOUR TURN
+	 */
+	void yourTurn();
+
+	/**
+	 * The game notification to the player who won
+	 * <p>
+	 * WINNER IS
+	 * user-name
+	 *
+	 * @param player name
+	 */
+	void winnerIs(String player);
+
+	/**
+	 * Server notification when it closes
+	 * <p>
+	 * SERVER OFF
+	 */
+	void serverOff();
 }

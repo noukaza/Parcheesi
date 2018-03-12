@@ -2,13 +2,12 @@ package server.core.model;
 
 import server.core.handler.ClientHandler;
 import server.core.model.room.ServerGameRoom;
-import server.core.util.event.ServerGameRoomEvents;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
-public class ServerModel implements ServerGameRoomEvents {
+public class ServerModel {
 
 	private volatile TreeMap<String, ClientHandler> usersList;
 	private volatile TreeMap<String, ServerGameRoom> serverRooms;
@@ -21,10 +20,16 @@ public class ServerModel implements ServerGameRoomEvents {
 	public synchronized boolean registerUser(String name, ClientHandler clientHandler) {
 		if (! existUserName(name)) {
 			this.usersList.put(name, clientHandler);
-			// TODO maybe notify all the users that a new user is here
+			//notifyRoomStatusChanged();
 			return true;
 		}
 		return false;
+	}
+
+	private void notifyRoomStatusChanged() {
+		List<String> statusList = getAllRoomsStatus();
+		for (ClientHandler user : usersList.values())
+			user.roomStatusChanged(statusList);
 	}
 
 	public synchronized void unregisterUser(String name, ClientHandler clientHandler) {
@@ -36,9 +41,9 @@ public class ServerModel implements ServerGameRoomEvents {
 				} else if (clientHandler.isSpectator()) {
 					room.removeSpectator(clientHandler);
 				}
+				//todo notify users in the room that it has changed
 			}
 			this.usersList.remove(name);
-			// TODO notify navigators that rooms status has changed
 		}
 	}
 
@@ -56,7 +61,7 @@ public class ServerModel implements ServerGameRoomEvents {
 		if (! existRoomName(name)) {
 			ServerGameRoom room = this.serverRooms.put(name, new ServerGameRoom(this, admine));
 			admine.getPlayer().setRoom(room);
-			// TODO notify new room
+			notifyRoomStatusChanged();
 			return true;
 		}
 		return false;
@@ -68,6 +73,7 @@ public class ServerModel implements ServerGameRoomEvents {
 			if (room.addPlayer(clientHandler)) {
 				clientHandler.setClientState(ClientHandler.ClientState.ST_PLAYER);
 				//TODO notify all people in room the same room that a new player came
+				notifyRoomStatusChanged();
 			} else {
 				clientHandler.setClientState(ClientHandler.ClientState.ST_SPECTATOR);
 
@@ -77,7 +83,7 @@ public class ServerModel implements ServerGameRoomEvents {
 		return false;
 	}
 
-	public List<String> getAllRooms() {
+	public synchronized List<String> getAllRoomsStatus() {
 		ArrayList<String> rooms = new ArrayList<>();
 		for (String roomName : serverRooms.keySet()) {
 			ServerGameRoom room = serverRooms.get(roomName);
@@ -101,7 +107,8 @@ public class ServerModel implements ServerGameRoomEvents {
 	}
 
 	public synchronized void serverClosing() {
-		// TODO tell all the users that we are closing
+		for (ClientHandler user : usersList.values())
+			user.shutdownRequested();
 	}
 
 }

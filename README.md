@@ -92,7 +92,6 @@ server returns dice result
 
 	GAME UPDATE
 	user-name
-	0:1:2:3
 	[0-63]:[0-63]:[0-63]:[0-63]
 	END
 
@@ -106,5 +105,9 @@ server notify everyone who's turn
 	user-name
 
 server sends which player won
+
+	SERVER OFF
+
+server sends notification when it closes
 
 	

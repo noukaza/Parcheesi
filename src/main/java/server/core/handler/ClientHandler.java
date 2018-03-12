@@ -5,6 +5,7 @@ import server.core.handler.io.ServerOutput;
 import server.core.logger.IServerLogger;
 import server.core.model.ServerModel;
 import server.core.player.Player;
+import server.core.util.event.ServerGameRoomEvents;
 import server.core.util.event.ServerModelEvents;
 import server.core.util.exception.ClientLeftException;
 import server.core.util.exception.ServerProtocolException;
@@ -14,7 +15,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.List;
 
-public class ClientHandler implements Runnable, ServerInputProtocol, ServerModelEvents {
+public class ClientHandler implements Runnable, ServerInputProtocol, ServerModelEvents, ServerGameRoomEvents {
 
 	/**
 	 * To be able to handle the client's input and output
@@ -102,7 +103,7 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 	@Override
 	public void commandeRoomList() {
 		if (clientState == ClientState.ST_NAVIGATOR) {
-			List<String> list = serverModel.getAllRooms();
+			List<String> list = serverModel.getAllRoomsStatus();
 			clientOutput.roomList(list);
 		}
 	}
@@ -203,6 +204,19 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 
 	public synchronized boolean isPlayer() {
 		return clientState == ClientState.ST_PLAYER;
+	}
+
+	@Override
+	public void roomStatusChanged(List<String> roomsStatus) {
+		if (clientState == ClientState.ST_NAVIGATOR) {
+			clientOutput.roomList(roomsStatus);
+		}
+	}
+
+	@Override
+	public void shutdownRequested() {
+		// TODO maybe clean stuff here before you close
+		clientOutput.serverOff();
 	}
 
 	public enum ClientState {
