@@ -15,6 +15,7 @@ public class GameLayout {
 	private Boolean gamePanelExist;
 	private String roomName;
 
+
 	public GameLayout() {
 		JFrame frame = new JFrame("GameLayout");
 		frame.setContentPane(this.panel1);
