@@ -6,7 +6,7 @@ public interface ServerOutputProtocol {
 
 	/**
 	 * Means that your chosen name is not accepted
-	 * <p>
+	 *
 	 * NAME BAD
 	 *
 	 */
@@ -14,7 +14,7 @@ public interface ServerOutputProtocol {
 
 	/**
 	 * Means that your name is accepted
-	 * <p>
+	 *
 	 * NAME OK
 	 *
 	 */
@@ -55,7 +55,7 @@ public interface ServerOutputProtocol {
 
 	/**
 	 * Means that you have succesfully entered a the room as a spectator
-	 * <p>
+	 *
 	 * ROOM ENTERED SPECTATOR
 	 */
 	void roomEnteredSpectator();
@@ -63,7 +63,7 @@ public interface ServerOutputProtocol {
 	/**
 	 * A Response with all the existing rooms in the server,
 	 * including the number of players and spectators
-	 * <p>
+	 *
 	 * ROOMS LIST
 	 * room-name:[0-4]:[0~inf]
 	 * ..
@@ -73,4 +73,52 @@ public interface ServerOutputProtocol {
 	 */
 	void roomList(List<String> rooms);
 
+	/**
+	 * A Response with all the existing players in a room
+	 * <p>
+	 * PLAYERS LIST
+	 * user-name
+	 * ..
+	 * END
+	 *
+	 * @param players all the players in the room
+	 */
+	void playersList(List<String> players);
+
+	/**
+	 * A Response with all the existing spectators in a room
+	 * <p>
+	 * SPECTATORS LIST
+	 * user-name
+	 * ..
+	 * END
+	 *
+	 * @param players all the players in the room
+	 */
+	void spectatorsList(List<String> players);
+
+
+	/**
+	 * A Response with the result of a player dice
+	 * <p>
+	 * DICE RESULT
+	 * [1-6]
+	 *
+	 * @param value of the played dice
+	 */
+	void diceResult(int value);
+
+	/**
+	 * The game notification to all players and spectators
+	 * <p>
+	 * GAME UPDATE
+	 * user-name
+	 * 0:1:2:3
+	 * [0-63]:[0-63]:[0-63]:[0-63]
+	 * ...
+	 * END
+	 *
+	 * @param lines update lines
+	 */
+	void gameUpdate(List<String> lines);
 }

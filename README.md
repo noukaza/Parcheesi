@@ -90,7 +90,7 @@ server sends spectators list
 
 server returns dice result
 
-	PLAYERS UPDATE
+	GAME UPDATE
 	user-name
 	0:1:2:3
 	[0-63]:[0-63]:[0-63]:[0-63]
