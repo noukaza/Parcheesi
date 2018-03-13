@@ -20,7 +20,6 @@ public class ServerModel {
 	public synchronized boolean registerUser(String name, ClientHandler clientHandler) {
 		if (! existUserName(name)) {
 			this.usersList.put(name, clientHandler);
-			//notifyRoomStatusChanged();
 			return true;
 		}
 		return false;
@@ -41,7 +40,7 @@ public class ServerModel {
 				} else if (clientHandler.isSpectator()) {
 					room.removeSpectator(clientHandler);
 				}
-				//todo notify users in the room that it has changed
+				notifyRoomStatusChanged();
 			}
 			this.usersList.remove(name);
 		}
@@ -51,7 +50,9 @@ public class ServerModel {
 		if (existUserName(oldName) && ! existUserName(newName)) {
 			usersList.remove(oldName);
 			usersList.put(newName, clientHandler);
-			// TODO notify all the users in his room that his name has changed
+			if (! clientHandler.isNavigator()) {
+				// TODO notify all the users in his room that his name has changed
+			}
 			return true;
 		}
 		return false;
@@ -72,7 +73,6 @@ public class ServerModel {
 			ServerGameRoom room = serverRooms.get(roomName);
 			if (room.addPlayer(clientHandler)) {
 				clientHandler.setClientState(ClientHandler.ClientState.ST_PLAYER);
-				//TODO notify all people in room the same room that a new player came
 				notifyRoomStatusChanged();
 			} else {
 				clientHandler.setClientState(ClientHandler.ClientState.ST_SPECTATOR);

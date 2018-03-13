@@ -3,6 +3,7 @@ package server.core.model.room;
 import server.core.handler.ClientHandler;
 import server.core.model.ServerModel;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Vector;
 
@@ -36,10 +37,31 @@ public class ServerGameRoom {
 	public synchronized boolean addPlayer(ClientHandler clientHandler) {
 		if (players.size() < MAX_PLAYERS && ! gameStarted) {
 			players.add(clientHandler);
+			notifyPlayersListChanged();
 			return true;
 		}
 		spectators.add(clientHandler);
+		// todo give this new spectator a notification of the game
+		notifySpectatorsNumberChanged();
 		return false;
+	}
+
+	private synchronized void notifySpectatorsNumberChanged() {
+		int size = spectators.size();
+		for (ClientHandler player : players)
+			player.notifySpectatorsNumberChanged(size);
+		for (ClientHandler spectator : spectators)
+			spectator.notifySpectatorsNumberChanged(size);
+	}
+
+	private synchronized void notifyPlayersListChanged() {
+		ArrayList<String> names = new ArrayList<>();
+		for (ClientHandler player : players)
+			names.add(player.getPlayer().getName());
+		for (ClientHandler player : players)
+			player.notifyPlayersListChanged(names);
+		for (ClientHandler spectator : spectators)
+			spectator.notifyPlayersListChanged(names);
 	}
 
 	public synchronized void removePlayer(ClientHandler clientHandler) {
@@ -56,6 +78,7 @@ public class ServerGameRoom {
 		} else {
 			if (players.remove(clientHandler)) {
 				// todo notify that he left
+
 			}
 		}
 	}
@@ -63,6 +86,7 @@ public class ServerGameRoom {
 	public synchronized void removeSpectator(ClientHandler clientHandler) {
 		if (spectators.remove(clientHandler)) {
 			// todo notify that he left
+			notifySpectatorsNumberChanged();
 		}
 	}
 
