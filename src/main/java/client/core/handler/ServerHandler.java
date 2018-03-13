@@ -4,6 +4,7 @@ import client.core.handler.io.ClientInput;
 import client.core.handler.io.ClientOutput;
 import client.core.util.exeption.ClientProtocolException;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -15,7 +16,7 @@ public class ServerHandler implements Runnable {
 	private ClientInput clientInput;
 	private ClientOutput clientOutput;
 
-	public ServerHandler(Socket socket) throws IOException  {
+	public ServerHandler(Socket socket) throws IOException {
 		this.socket = socket;
 		System.out.println(socket);
 		this.clientOutput = new ClientOutput(this.socket.getOutputStream());
@@ -38,6 +39,7 @@ public class ServerHandler implements Runnable {
 				System.out.println(serverResponse);
 
 				clientInput.doRun();
+
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -46,5 +48,21 @@ public class ServerHandler implements Runnable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void sendName(String name) {
+		clientOutput.sendName(name);
+	}
+	public void creatRoom(String roomName){
+		clientOutput.createRoom(roomName);
+	}
+	public void disconnect(){
+		clientOutput.disconnect();
+	}
+	public void badNAme() {
+		String name = JOptionPane.showInputDialog("Enter you'r name ! ");
+		sendName(name);
+
+
 	}
 }

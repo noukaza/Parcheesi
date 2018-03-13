@@ -1,8 +1,11 @@
 package client.core.gui;
 
+import client.core.handler.ServerHandler;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class GameLayout {
 	private JTabbedPane tabbedPane1;
@@ -14,16 +17,17 @@ public class GameLayout {
 	private JButton addRoomButton;
 	private Boolean gamePanelExist;
 	private String roomName;
+	private ServerHandler serverHandler;
 
 
-	public GameLayout() {
+	public GameLayout(ServerHandler serverHandler) {
 		JFrame frame = new JFrame("GameLayout");
 		frame.setContentPane(this.panel1);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
-
+		this.serverHandler = serverHandler;
 		gamePanelExist = false;
 
 		startButton.addActionListener(new AbstractAction() {
@@ -43,13 +47,16 @@ public class GameLayout {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				roomName = JOptionPane.showInputDialog("Name of the room ");
+				Random r = new Random();
+				serverHandler.creatRoom(roomName);
+
 			}
 		});
 
 		exitButton.addActionListener(new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//TODO add requette exite
+				serverHandler.disconnect();
 				System.exit(0);
 			}
 		});

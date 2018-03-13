@@ -38,81 +38,88 @@ public class ClientInput {
 
     public ClientInput(InputStream in) {
         this.in = in;
+        this.connected = false;
+
+
     }
 
-    public void doRun() throws Exception, ClientProtocolException {
+    public void doRun() throws Exception {
 
-        connected = false;
-       try (BufferedReader buffer = new BufferedReader(new InputStreamReader(in))) {
+        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(in))) {
             while (! connected) {
+                System.out.println("test");
+
                 String header = buffer.readLine();
-                switch (header) {
-                    case NAME_OK:
-                        //TODO ..
-                        break;
-                    case NAME_BAD:
-                        //TODO ..
-                        break;
-                    case ROOM_ALREADY_EXISTS:
-                        //TODO ..
-                        break;
-                    case ROOM_CREATED:
-                        //TODO ..
-                        break;
-                    case ROOM_ENTERED:
-                        //TODO ..
-                        break;
-                    case ROOM_CLOSED:
-                        //TODO ..
-                        break;
-                    case ROOM_DOESNT_EXIST:
-                        //TODO ..
-                        break;
-                    case WELCOM_TO_ROOM:
-                        //TODO ..
-                        break;
-                    case GAME_STARTED:
-                        //TODO ..
-                        break;
-                    case ROOMS_LIST:
-                        //TODO ..
-                        break;
-                    case PLAYERS_LIST:
-                        //TODO ..
-                        break;
-                    case SPECTATORS_LIST:
-                        //TODO ..
-                        break;
-                    case START_GAME:
-                        //TODO ..
-                        break;
-                    case YOUR_TURN:
-                        //TODO ..
-                        break;
-                    case DICE_RESULT:
-                        //TODO ..
-                        break;
-                    case BAD_MOVE:
-                        //TODO ..
-                        break;
-                    case PLAYERS_UPDATE:
-                        //TODO ..
-                        break;
-                    case WINNER_IS:
-                        //TODO ..
-                        break;
-                    case PLAY_DICE:
-                        //TODO ..
-                        break;
-                    case MOVE_HORSE:
-                        //TODO ..
-                        break;
-                    case GOOD_BYE:
-                        goodBye();
-                        break;
-                    default:
-                        throw new ClientProtocolException("Invalid Commande :" + header);
+                if (header !=null){
+                    switch (header) {
+                        case NAME_OK:
+                            System.out.println("ok");
+                            break;
+                        case NAME_BAD:
+                                System.out.println("ok");
+                            break;
+                        case ROOM_ALREADY_EXISTS:
+                            //TODO ..
+                            break;
+                        case ROOM_CREATED:
+                            //TODO ..
+                            break;
+                        case ROOM_ENTERED:
+                            //TODO ..
+                            break;
+                        case ROOM_CLOSED:
+                            //TODO ..
+                            break;
+                        case ROOM_DOESNT_EXIST:
+                            //TODO ..
+                            break;
+                        case WELCOM_TO_ROOM:
+                            //TODO ..
+                            break;
+                        case GAME_STARTED:
+                            //TODO ..
+                            break;
+                        case ROOMS_LIST:
+                            //TODO ..
+                            break;
+                        case PLAYERS_LIST:
+                            //TODO ..
+                            break;
+                        case SPECTATORS_LIST:
+                            //TODO ..
+                            break;
+                        case START_GAME:
+                            //TODO ..
+                            break;
+                        case YOUR_TURN:
+                            //TODO ..
+                            break;
+                        case DICE_RESULT:
+                            //TODO ..
+                            break;
+                        case BAD_MOVE:
+                            //TODO ..
+                            break;
+                        case PLAYERS_UPDATE:
+                            //TODO ..
+                            break;
+                        case WINNER_IS:
+                            //TODO ..
+                            break;
+                        case PLAY_DICE:
+                            //TODO ..
+                            break;
+                        case MOVE_HORSE:
+                            //TODO ..
+                            break;
+                        case GOOD_BYE:
+                            goodBye();
+                            break;
+                        default:
+                            throw new ClientProtocolException("Invalid Commande :" + header);
+                    }
                 }
+
             }
         }
     }
