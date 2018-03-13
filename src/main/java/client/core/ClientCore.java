@@ -26,7 +26,9 @@ public class ClientCore implements Runnable {
 			System.out.println("Connected !!");
 			serverHandler = new ServerHandler(this.socket);
 			new Thread(serverHandler).start();
-			GameLayout game = new GameLayout();
+			String name = JOptionPane.showInputDialog("Enter you'r name ! ");
+			serverHandler.sendName(name);
+			GameLayout game = new GameLayout(serverHandler);
 
 			// pour le test
 			ArrayList<String> s = new ArrayList<>();
