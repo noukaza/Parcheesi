@@ -1,11 +1,11 @@
 package client.core.handler.io;
 
-import client.core.util.protocol.ClientOutputProtocol;
+import server.core.util.protocol.ServerInputProtocol;
 
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-public class ClientOutput implements ClientOutputProtocol{
+public class ClientOutput implements ServerInputProtocol {
 
     private PrintWriter out;
 
@@ -13,52 +13,49 @@ public class ClientOutput implements ClientOutputProtocol{
         this.out = new PrintWriter(outputStream, true);
     }
 
-    public void sendName(String name) {
+	@Override
+	public void commandeName(String name) {
         out.println("NAME");
         out.println(name);
     }
 
     @Override
-    public void roomListe() {
+    public void commandeRoomList() {
 
     }
 
     @Override
-    public void createRoom(String roomName) {
-        out.println("CREATE ROOM");
-        out.println(roomName);
+    public void commandeCreateRoom(String name) {
+
     }
 
     @Override
-    public void enterRoom(String roomName){
-        out.println("ENTER ROOM");
-        out.println(roomName);
-    }
-    public void startGame(){
-        out.println("START GAME");
+    public void commandeEnterRoom(String name) {
+
     }
 
     @Override
-    public void playDice(){
-        out.println("PLAY DICE");
+    public void commandePlayDice() {
+
     }
 
     @Override
-    public void moveHorse(int horse) {
-        out.println("MOVE HORSE");
-        out.println(horse);
+    public void commandeMoveTheHorse(int horse) {
 
-    }
-
-
-    @Override
-    public void exitRoom(){
-        out.println("EXIT ROOM");
     }
 
     @Override
-    public void disconnect(){
-        out.println("DISCONNECT");
+    public void commandeExitRoom() {
+
     }
 
+    @Override
+    public void commandeDisconnect() {
+
+    }
+
+	@Override
+	public void commandeStartGame() {
+
+	}
 }

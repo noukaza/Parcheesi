@@ -2,67 +2,176 @@ package client.core.handler;
 
 import client.core.handler.io.ClientInput;
 import client.core.handler.io.ClientOutput;
-import client.core.util.exeption.ClientProtocolException;
+import server.core.util.protocol.ServerInputProtocol;
+import server.core.util.protocol.ServerOutputProtocol;
 
-import javax.swing.*;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Scanner;
+import java.util.List;
 
-public class ServerHandler implements Runnable {
+public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInputProtocol {
 	private Socket socket;
-	private boolean stop;
+
 	private ClientInput clientInput;
 	private ClientOutput clientOutput;
 
-	public ServerHandler(Socket socket) throws IOException {
+	// todo add client model
+
+	public ServerHandler(/*todo add client model*/Socket socket) {
 		this.socket = socket;
-		System.out.println(socket);
-		this.clientOutput = new ClientOutput(this.socket.getOutputStream());
-		this.clientInput = new ClientInput(this.socket.getInputStream());
-		this.stop = false;
+		//todo add the client model
 	}
 
 	public void run() {
-		try {
-			Scanner userInput = new Scanner(System.in);
-			Scanner serverInput = new Scanner(socket.getInputStream());
-			PrintWriter serverOutput = new PrintWriter(socket.getOutputStream(), true);
-			while (!stop) {
-				String line = userInput.nextLine();
-
-				serverOutput.println(line);
-
-				String serverResponse = serverInput.nextLine();
-
-				System.out.println(serverResponse);
-
-				clientInput.doRun();
-
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
+		try (Socket s = socket) {
+			clientInput = new ClientInput(this, this.socket.getInputStream());
+			clientOutput = new ClientOutput(this.socket.getOutputStream());
+			clientInput.doRun();
 		} catch (Exception e) {
 			e.printStackTrace();
+			//todo add finish();
 		}
 	}
 
-	public void sendName(String name) {
-		clientOutput.sendName(name);
-	}
-	public void creatRoom(String roomName){
-		clientOutput.createRoom(roomName);
-	}
-	public void disconnect(){
-		clientOutput.disconnect();
-	}
-	public void badNAme() {
-		String name = JOptionPane.showInputDialog("Enter you'r name ! ");
-		sendName(name);
 
+	@Override
+	public void nameBad() {
 
+	}
+
+	@Override
+	public void nameOk() {
+
+	}
+
+	@Override
+	public void roomError() {
+
+	}
+
+	@Override
+	public void roomCreated() {
+
+	}
+
+	@Override
+	public void roomClosed() {
+
+	}
+
+	@Override
+	public void roomDoesntExist() {
+
+	}
+
+	@Override
+	public void roomEnteredPlayer() {
+
+	}
+
+	@Override
+	public void roomEnteredSpectator() {
+
+	}
+
+	@Override
+	public void roomList(List<String> rooms) {
+
+	}
+
+	@Override
+	public void playersList(List<String> players) {
+
+	}
+
+	@Override
+	public void spectatorsNumber(int spectators) {
+
+	}
+
+	@Override
+	public void diceResult(String player, int value) {
+
+	}
+
+	@Override
+	public void gameUpdate(List<String> lines) {
+
+	}
+
+	@Override
+	public void playerTurn(String player) {
+
+	}
+
+	@Override
+	public void badMove() {
+
+	}
+
+	@Override
+	public void gameStarted() {
+
+	}
+
+	@Override
+	public void winnerIs(String player) {
+
+	}
+
+	@Override
+	public void serverOff() {
+
+	}
+
+	@Override
+	public void goodBye() {
+
+	}
+
+	@Override
+	public void commandeName(String name) {
+		// todo add name
+		clientOutput.commandeName(name);
+	}
+
+	@Override
+	public void commandeRoomList() {
+		clientOutput.commandeRoomList();
+	}
+
+	@Override
+	public void commandeCreateRoom(String name) {
+		// todo add roomname to the handler
+		clientOutput.commandeCreateRoom(name);
+	}
+
+	@Override
+	public void commandeEnterRoom(String name) {
+		clientOutput.commandeEnterRoom(name);
+	}
+
+	@Override
+	public void commandePlayDice() {
+		clientOutput.commandePlayDice();
+	}
+
+	@Override
+	public void commandeMoveTheHorse(int horse) {
+		clientOutput.commandeMoveTheHorse(horse);
+	}
+
+	@Override
+	public void commandeExitRoom() {
+		clientOutput.commandeExitRoom();
+	}
+
+	@Override
+	public void commandeDisconnect() {
+		clientOutput.commandeDisconnect();
+	}
+
+	@Override
+	public void commandeStartGame() {
+		clientOutput.commandeStartGame();
 	}
 }

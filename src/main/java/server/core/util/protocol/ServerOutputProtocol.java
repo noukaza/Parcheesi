@@ -139,9 +139,18 @@ public interface ServerOutputProtocol {
 	void playerTurn(String player);
 
 	/**
-	 * The game notification that the game has started
+	 * the game notification when the player does
+	 * a bad move, either chosen a wrong horse or
+	 * tried to do a bad commande
 	 * <p>
+	 * BAD MOVE
+	 */
+	void badMove();
+	/**
+	 * The game notification that the game has started
+	 *
 	 * GAME STARTED
+	 *
 	 */
 	void gameStarted();
 
@@ -165,7 +174,7 @@ public interface ServerOutputProtocol {
 
 	/**
 	 * Server notification to user when he leaves
-	 * <p>
+	 *
 	 * GOOD BYE
 	 */
 	void goodBye();

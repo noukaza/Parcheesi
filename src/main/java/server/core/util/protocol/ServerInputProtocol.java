@@ -5,7 +5,7 @@ public interface ServerInputProtocol {
 	/**
 	 * To set a user name, or change its value
 	 * in the server
-	 * <p>
+	 *
 	 * NAME
 	 * user-name
 	 *
@@ -16,14 +16,15 @@ public interface ServerInputProtocol {
 	/**
 	 * To request the list of all the rooms
 	 * in the server
-	 * <p>
+	 *
 	 * ROOMS LIST
+	 *
 	 */
 	void commandeRoomList();
 
 	/**
 	 * To create new room in the server
-	 * <p>
+	 *
 	 * CREATE ROOM
 	 * room-name
 	 *
@@ -33,7 +34,7 @@ public interface ServerInputProtocol {
 
 	/**
 	 * To entre an existing room in the server
-	 * <p>
+	 *
 	 * ENTER ROOM
 	 * room-name
 	 *
@@ -43,14 +44,15 @@ public interface ServerInputProtocol {
 
 	/**
 	 * To roll the dice in a running game
-	 * <p>
+	 *
 	 * PLAY DICE
+	 *
 	 */
 	void commandePlayDice();
 
 	/**
 	 * To move a chosen horse in a running game
-	 * <p>
+	 *
 	 * MOVE HORSE
 	 * [0-3]
 	 *
@@ -60,22 +62,25 @@ public interface ServerInputProtocol {
 
 	/**
 	 * To exit a room that you are already in
-	 * <p>
+	 *
 	 * EXIT ROOM
+	 *
 	 */
 	void commandeExitRoom();
 
 	/**
 	 * To disconnect from the server
-	 * <p>
+	 *
 	 * DISCONNECT
+	 *
 	 */
 	void commandeDisconnect();
 
 	/**
 	 * To start the game, but only the creator of the room, or the admine can do this
-	 * <p>
+	 *
 	 * START GAME
+	 *
 	 */
 	void commandeStartGame();
 }

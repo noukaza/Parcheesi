@@ -1,5 +1,6 @@
 package client.core.handler.io;
 
+import client.core.handler.ServerHandler;
 import client.core.util.exeption.ClientProtocolException;
 
 import java.io.BufferedReader;
@@ -7,40 +8,35 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class ClientInput {
+
     private static final String NAME_OK = "NAME OK";
     private static final String NAME_BAD = "NAME BAD";
-
-    private static final String ROOM_ALREADY_EXISTS = "ROOM ALREADY EXISTS";
-    private static final String ROOM_CREATED = "ROOM CREATED";
-    private static final String ROOM_ENTERED = "ROOM ENTERED";
-    private static final String ROOM_CLOSED = "ROOM CLOSED";
+	private static final String ROOM_ERROR = "ROOM ERROR";
+	private static final String ROOM_CREATED = "ROOM CREATED";
+	private static final String ROOM_CLOSED = "ROOM CLOSED";
     private static final String ROOM_DOESNT_EXIST = "ROOM DOESNT EXIST";
-    private static final String WELCOM_TO_ROOM = "WELCOM TO ROOM";
-    private static final String GAME_STARTED = "GAME STARTED";
-    private static final String ROOMS_LIST = "ROOMS LIST";
-    private static final String PLAYERS_LIST = "PLAYERS LIST";
-    private static final String SPECTATORS_LIST = "SPECTATORS LIST";
-
-    private static final String START_GAME = "START GAME";
-    private static final String YOUR_TURN = "YOUR TURN";
+	private static final String ROOM_ENTERED_PLAYER = "ROOM ENTERED PLAYER";
+	private static final String ROOM_ENTERED_SPECTATOR = "ROOM ENTERED SPECTATOR";
+	private static final String ROOMS_LIST = "ROOMS LIST";
+	private static final String PLAYERS_LIST = "PLAYERS LIST";
+	private static final String SPECTATORS_NUMBER = "SPECTATORS NUMBER";
+	private static final String GAME_STARTED = "GAME STARTED";
+	private static final String PLAYER_TURN = "PLAYER TURN";
     private static final String DICE_RESULT = "DICE RESULT";
-    private static final String BAD_MOVE = "BAD MOVE";
-    private static final String PLAYERS_UPDATE = "PLAYERS UPDATE";
-    private static final String WINNER_IS = "WINNER IS";
-
-    private static final String PLAY_DICE = "PLAY DICE";
-    private static final String MOVE_HORSE = "MOVE HORSE";
-
+	private static final String WINNER_IS = "WINNER IS";
+	private static final String BAD_MOVE = "BAD MOVE";
+	private static final String GAME_UPDATE = "GAME UPDATE";
+	private static final String SERVER_OFF = "SERVER OFF";
     private static final String GOOD_BYE = "GOOD BYE";
 
     private InputStream in;
     private boolean connected;
+	private ServerHandler handler;
 
-    public ClientInput(InputStream in) {
+	public ClientInput(ServerHandler handler, InputStream in) {
         this.in = in;
         this.connected = false;
-
-
+		this.handler = handler;
     }
 
     public void doRun() throws Exception {
@@ -53,27 +49,27 @@ public class ClientInput {
                 if (header !=null){
                     switch (header) {
                         case NAME_OK:
-                            System.out.println("ok");
+	                        handler.nameOk();
                             break;
                         case NAME_BAD:
-                                System.out.println("ok");
+	                        handler.nameBad();
                             break;
-                        case ROOM_ALREADY_EXISTS:
+	                    case ROOM_ERROR:
                             //TODO ..
                             break;
                         case ROOM_CREATED:
                             //TODO ..
                             break;
-                        case ROOM_ENTERED:
+	                    case ROOM_ENTERED_PLAYER:
                             //TODO ..
                             break;
-                        case ROOM_CLOSED:
+	                    case ROOM_ENTERED_SPECTATOR:
+		                    //TODO ..
+		                    break;
+	                    case ROOM_CLOSED:
                             //TODO ..
                             break;
-                        case ROOM_DOESNT_EXIST:
-                            //TODO ..
-                            break;
-                        case WELCOM_TO_ROOM:
+	                    case ROOM_DOESNT_EXIST:
                             //TODO ..
                             break;
                         case GAME_STARTED:
@@ -85,13 +81,10 @@ public class ClientInput {
                         case PLAYERS_LIST:
                             //TODO ..
                             break;
-                        case SPECTATORS_LIST:
+	                    case SPECTATORS_NUMBER:
                             //TODO ..
                             break;
-                        case START_GAME:
-                            //TODO ..
-                            break;
-                        case YOUR_TURN:
+	                    case PLAYER_TURN:
                             //TODO ..
                             break;
                         case DICE_RESULT:
@@ -100,21 +93,18 @@ public class ClientInput {
                         case BAD_MOVE:
                             //TODO ..
                             break;
-                        case PLAYERS_UPDATE:
+	                    case GAME_UPDATE:
                             //TODO ..
                             break;
                         case WINNER_IS:
                             //TODO ..
                             break;
-                        case PLAY_DICE:
-                            //TODO ..
+	                    case GOOD_BYE:
+		                    //todo
                             break;
-                        case MOVE_HORSE:
-                            //TODO ..
-                            break;
-                        case GOOD_BYE:
-                            goodBye();
-                            break;
+	                    case SERVER_OFF:
+		                    //todo
+		                    break;
                         default:
                             throw new ClientProtocolException("Invalid Commande :" + header);
                     }
@@ -123,14 +113,5 @@ public class ClientInput {
             }
         }
     }
-
-    public void goodBye() {
-        this.connected = true;
-    }
-
-
-
-
-
 
 }

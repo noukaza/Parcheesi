@@ -95,6 +95,11 @@ public class ServerOutput implements ServerOutputProtocol {
 	}
 
 	@Override
+	public void badMove() {
+		out.println("BAD MOVE");
+	}
+
+	@Override
 	public void gameStarted() {
 		out.println("GAME STARTED");
 	}
