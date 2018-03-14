@@ -21,41 +21,44 @@ public class ClientOutput implements ServerInputProtocol {
 
     @Override
     public void commandeRoomList() {
-
+	    out.println("ROOMS LIST");
     }
 
     @Override
     public void commandeCreateRoom(String name) {
-
+	    out.println("CREATE ROOM");
+	    out.println(name);
     }
 
     @Override
     public void commandeEnterRoom(String name) {
-
+	    out.println("ENTER ROOM");
+	    out.println(name);
     }
 
     @Override
     public void commandePlayDice() {
-
+	    out.println("PLAY DICE");
     }
 
     @Override
     public void commandeMoveTheHorse(int horse) {
-
+	    out.println("MOVE HORSE");
+	    out.println(horse);
     }
 
     @Override
     public void commandeExitRoom() {
-
+	    out.println("EXIT ROOM");
     }
 
     @Override
     public void commandeDisconnect() {
-
+	    out.println("DISCONNECT");
     }
 
 	@Override
 	public void commandeStartGame() {
-
+		out.println("START GAME");
 	}
 }

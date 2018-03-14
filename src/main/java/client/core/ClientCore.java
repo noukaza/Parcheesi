@@ -10,9 +10,6 @@ import java.net.Socket;
 public class ClientCore implements Runnable {
 	private String address;
 	private int port;
-	private Socket socket ;
-
-	private GameFrame model;
 
 	public ClientCore(String address, int port) {
 		this.address = address;
@@ -22,20 +19,13 @@ public class ClientCore implements Runnable {
 	@Override
 	public void run() {
 		try {
-			this.socket = new Socket(address, port);
-			ServerHandler serverHandler = new ServerHandler(model, this.socket);
-			this.model = new GameFrame(serverHandler);
+			Socket socket = new Socket(address, port);
+			GameFrame model = new GameFrame();
+			ServerHandler serverHandler = new ServerHandler(model, socket);
+			model.startModel(serverHandler);
 			new Thread(serverHandler).start();
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null, "Connection Error", e.getMessage(), JOptionPane.ERROR_MESSAGE);
 		}
-	}
-
-	public Socket getSocket() {
-		return socket;
-	}
-
-	public void setSocket(Socket socket) {
-		this.socket = socket;
 	}
 }

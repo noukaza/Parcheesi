@@ -6,7 +6,9 @@ import client.core.handler.io.ClientOutput;
 import server.core.util.protocol.ServerInputProtocol;
 import server.core.util.protocol.ServerOutputProtocol;
 
+import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInputProtocol {
@@ -24,109 +26,117 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 
 	public void run() {
 		try (Socket s = socket) {
-			clientInput = new ClientInput(this, this.socket.getInputStream());
-			clientOutput = new ClientOutput(this.socket.getOutputStream());
+			clientInput = new ClientInput(this, s.getInputStream());
+			clientOutput = new ClientOutput(s.getOutputStream());
 			clientInput.doRun();
 		} catch (Exception e) {
 			e.printStackTrace();
-			//todo add finish();
+			finish();
 		}
 	}
 
-
 	@Override
 	public void nameBad() {
-
+		model.serverRefusedName();
 	}
 
 	@Override
 	public void nameOk() {
-
+		model.serverAcceptedName();
 	}
 
 	@Override
 	public void roomError() {
-
+		model.serverRefusedRoomName();
 	}
 
 	@Override
 	public void roomCreated() {
-
+		//todo code here
 	}
 
 	@Override
 	public void roomClosed() {
-
+		//todo code here
 	}
 
 	@Override
 	public void roomDoesntExist() {
-
+		//todo code here
 	}
 
 	@Override
 	public void roomEnteredPlayer() {
-
+		//todo code here
 	}
 
 	@Override
 	public void roomEnteredSpectator() {
-
+		//todo code here
 	}
 
 	@Override
 	public void roomList(List<String> rooms) {
-
+		ArrayList<String> names = new ArrayList<>();
+		ArrayList<Integer> players = new ArrayList<>();
+		ArrayList<Integer> spectators = new ArrayList<>();
+		for (int i = 0; i < rooms.size(); i += 2) {
+			names.add(rooms.get(i));
+			String[] sides = rooms.get(i + 1).split(":");
+			players.add(Integer.parseInt(sides[0]));
+			spectators.add(Integer.parseInt(sides[1]));
+		}
+		model.updateRoomsList(names, players, spectators);
 	}
 
 	@Override
 	public void playersList(List<String> players) {
-
+		//todo code here
 	}
 
 	@Override
 	public void spectatorsNumber(int spectators) {
-
+		//todo code here
 	}
 
 	@Override
 	public void diceResult(String player, int value) {
-
+		//todo code here
 	}
 
 	@Override
 	public void gameUpdate(List<String> lines) {
-
+		//todo code here
 	}
 
 	@Override
 	public void playerTurn(String player) {
-
+		//todo code here
 	}
 
 	@Override
 	public void badMove() {
-
+		//todo code here
 	}
 
 	@Override
 	public void gameStarted() {
-
+		//todo code here
 	}
 
 	@Override
 	public void winnerIs(String player) {
-
+		//todo code here
 	}
 
 	@Override
 	public void serverOff() {
-
+		//todo code here
 	}
 
 	@Override
 	public void goodBye() {
-
+		//todo code here
 	}
 
 	@Override
@@ -175,4 +185,14 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 	public void commandeStartGame() {
 		clientOutput.commandeStartGame();
 	}
+
+	private void finish() {
+		clientInput.disconnect();
+		try {
+			socket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 }

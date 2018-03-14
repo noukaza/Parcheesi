@@ -3,6 +3,8 @@ package client.core.gui;
 
 import client.core.handler.ServerHandler;
 
+import java.util.ArrayList;
+
 /**
  * @author NouakazaPc
  */
@@ -17,8 +19,8 @@ public class GameFrame extends javax.swing.JFrame {
     /**
      * Creates new form GameFrame
      */
-    public GameFrame(ServerHandler handler) {
-        initComponents();
+    public GameFrame() {
+	    initComponents();
 	    try {
 		    for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
 			    if ("Nimbus".equals(info.getName())) {
@@ -32,16 +34,19 @@ public class GameFrame extends javax.swing.JFrame {
 			    | IllegalAccessException ex) {
 		    java.util.logging.Logger.getLogger(GameFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 	    }
-
-	    initView = new InitView(this, handler);
-	    setPreferredSize(initView.getPreferredSize());
-	    setContentPane(initView);
-	    pack();
-	    setLocationRelativeTo(null);
-	    setVisible(true);
-
     }
 
+	public void serverAcceptedName() {
+		initView = null;
+		navigatorView = new NavigatorView(handler);
+		setPreferredSize(navigatorView.getPreferredSize());
+		setContentPane(navigatorView);
+		pack();
+    }
+
+	public void serverRefusedName() {
+		initView.chosenNameIsBad();
+	}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -69,4 +74,25 @@ public class GameFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+	public void startModel(ServerHandler serverHandler) {
+		this.handler = serverHandler;
+		initView = new InitView(handler);
+		setPreferredSize(initView.getPreferredSize());
+		setContentPane(initView);
+		pack();
+		setLocationRelativeTo(null);
+		setVisible(true);
+	}
+
+	public void updateRoomsList(ArrayList<String> names, ArrayList<Integer> players, ArrayList<Integer> spectators) {
+		if (navigatorView != null) {
+			navigatorView.updateRoomsList(names, players, spectators);
+		}
+	}
+
+	public void serverRefusedRoomName() {
+		if (navigatorView != null) {
+			navigatorView.serverRefusedRoomName();
+		}
+	}
 }

@@ -6,6 +6,7 @@ import client.core.util.exeption.ClientProtocolException;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 public class ClientInput {
 
@@ -40,11 +41,11 @@ public class ClientInput {
     }
 
     public void doRun() throws Exception {
-
+	    int number;
+	    String line, name;
+	    ArrayList<String> list;
         try (BufferedReader buffer = new BufferedReader(new InputStreamReader(in))) {
             while (! connected) {
-                System.out.println("test");
-
                 String header = buffer.readLine();
                 if (header !=null){
                     switch (header) {
@@ -55,55 +56,78 @@ public class ClientInput {
 	                        handler.nameBad();
                             break;
 	                    case ROOM_ERROR:
-                            //TODO ..
+		                    handler.roomError();
                             break;
                         case ROOM_CREATED:
-                            //TODO ..
+	                        handler.roomCreated();
                             break;
 	                    case ROOM_ENTERED_PLAYER:
-                            //TODO ..
+		                    handler.roomEnteredPlayer();
                             break;
 	                    case ROOM_ENTERED_SPECTATOR:
-		                    //TODO ..
+		                    handler.roomEnteredSpectator();
 		                    break;
 	                    case ROOM_CLOSED:
-                            //TODO ..
+		                    handler.roomClosed();
                             break;
 	                    case ROOM_DOESNT_EXIST:
-                            //TODO ..
+		                    handler.roomDoesntExist();
                             break;
                         case GAME_STARTED:
-                            //TODO ..
+	                        handler.gameStarted();
                             break;
                         case ROOMS_LIST:
-                            //TODO ..
+	                        line = buffer.readLine();
+	                        list = new ArrayList<>();
+	                        while (! line.equals("END")) {
+		                        list.add(line);
+		                        line = buffer.readLine();
+	                        }
+	                        handler.roomList(list);
                             break;
                         case PLAYERS_LIST:
-                            //TODO ..
+	                        line = buffer.readLine();
+	                        list = new ArrayList<>();
+	                        while (! line.equals("END")) {
+		                        list.add(line);
+		                        line = buffer.readLine();
+	                        }
+	                        handler.playersList(list);
                             break;
 	                    case SPECTATORS_NUMBER:
-                            //TODO ..
+		                    number = Integer.parseInt(buffer.readLine());
+		                    handler.spectatorsNumber(number);
                             break;
 	                    case PLAYER_TURN:
-                            //TODO ..
+		                    name = buffer.readLine();
+		                    handler.playerTurn(name);
                             break;
                         case DICE_RESULT:
-                            //TODO ..
+	                        name = buffer.readLine();
+	                        number = Integer.parseInt(buffer.readLine());
+	                        handler.diceResult(name, number);
                             break;
                         case BAD_MOVE:
-                            //TODO ..
+	                        handler.badMove();
                             break;
 	                    case GAME_UPDATE:
-                            //TODO ..
-                            break;
+		                    line = buffer.readLine();
+		                    list = new ArrayList<>();
+		                    while (! line.equals("END")) {
+			                    list.add(line);
+			                    line = buffer.readLine();
+		                    }
+		                    handler.gameUpdate(list);
+		                    break;
                         case WINNER_IS:
-                            //TODO ..
+	                        name = buffer.readLine();
+	                        handler.winnerIs(name);
                             break;
 	                    case GOOD_BYE:
-		                    //todo
+		                    handler.goodBye();
                             break;
 	                    case SERVER_OFF:
-		                    //todo
+		                    handler.serverOff();
 		                    break;
                         default:
                             throw new ClientProtocolException("Invalid Commande :" + header);
@@ -113,5 +137,9 @@ public class ClientInput {
             }
         }
     }
+
+	public void disconnect() {
+		this.connected = false;
+	}
 
 }
