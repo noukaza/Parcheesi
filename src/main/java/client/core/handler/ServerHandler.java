@@ -1,5 +1,6 @@
 package client.core.handler;
 
+import client.core.gui.GameFrame;
 import client.core.handler.io.ClientInput;
 import client.core.handler.io.ClientOutput;
 import server.core.util.protocol.ServerInputProtocol;
@@ -14,11 +15,11 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 	private ClientInput clientInput;
 	private ClientOutput clientOutput;
 
-	// todo add client model
+	private GameFrame model;
 
-	public ServerHandler(/*todo add client model*/Socket socket) {
+	public ServerHandler(GameFrame model, Socket socket) {
 		this.socket = socket;
-		//todo add the client model
+		this.model = model;
 	}
 
 	public void run() {

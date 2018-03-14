@@ -1,60 +1,47 @@
 
 package client.core.gui;
 
+import client.core.handler.ServerHandler;
+
 /**
  * @author NouakazaPc
  */
 public class GameFrame extends javax.swing.JFrame {
 
+	private InitView initView;
+	private NavigatorView navigatorView;
+	private RoomView roomView;
+
+	private ServerHandler handler;
+
     /**
      * Creates new form GameFrame
      */
-    public GameFrame() {
+    public GameFrame(ServerHandler handler) {
         initComponents();
+	    try {
+		    for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+			    if ("Nimbus".equals(info.getName())) {
+				    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+				    break;
+			    }
+		    }
+	    } catch (ClassNotFoundException
+			    | InstantiationException
+			    | javax.swing.UnsupportedLookAndFeelException
+			    | IllegalAccessException ex) {
+		    java.util.logging.Logger.getLogger(GameFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+	    }
+
+	    initView = new InitView(this, handler);
+	    setPreferredSize(initView.getPreferredSize());
+	    setContentPane(initView);
+	    pack();
+	    setLocationRelativeTo(null);
+	    setVisible(true);
+
     }
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GameFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GameFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GameFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GameFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-
-                GameFrame g = new GameFrame();
-                RoomView v = new RoomView();
-                g.setPreferredSize(v.getPreferredSize());
-                g.setContentPane(v);
-                g.pack();
-                g.setLocationRelativeTo(null);
-                g.setVisible(true);
-
-            }
-        });
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -82,6 +69,4 @@ public class GameFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    // End of variables declaration//GEN-END:variables
 }

@@ -5,21 +5,33 @@
  */
 package client.core.gui;
 
+import client.core.handler.ServerHandler;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 /**
  * @author NouakazaPc
  */
 public class InitView extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Login;
+    private javax.swing.JButton login_btn;
     private javax.swing.JTextField Name;
     private javax.swing.JLabel jLabel1;
 
     /**
      * Creates new form NameLayout
      */
-    public InitView() {
+    public InitView(GameFrame model, ServerHandler handler) {
         initComponents();
+        login_btn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String value;
+            }
+        });
+
     }
 
     /**
@@ -33,22 +45,11 @@ public class InitView extends javax.swing.JPanel {
 
         jLabel1 = new javax.swing.JLabel();
         Name = new javax.swing.JTextField();
-        Login = new javax.swing.JButton();
+        login_btn = new javax.swing.JButton();
 
         jLabel1.setText("Enter you'r name ....");
 
-        Name.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                NameActionPerformed(evt);
-            }
-        });
-
-        Login.setText("Login");
-        Login.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                LoginActionPerformed(evt);
-            }
-        });
+        login_btn.setText("login_btn");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -61,7 +62,7 @@ public class InitView extends javax.swing.JPanel {
                                         .addGroup(layout.createSequentialGroup()
                                                 .addComponent(Name, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(Login)))
+                                                .addComponent(login_btn)))
                                 .addContainerGap(25, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -72,18 +73,9 @@ public class InitView extends javax.swing.JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(Name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(Login))
+                                        .addComponent(login_btn))
                                 .addContainerGap(79, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void NameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_NameActionPerformed
-
-    private void LoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginActionPerformed
-        // TODO add your handling code here:
-
-    }//GEN-LAST:event_LoginActionPerformed
-    // End of variables declaration//GEN-END:variables
 }
