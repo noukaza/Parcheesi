@@ -70,11 +70,9 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 			clientInput = new ServerInput(this, s.getInputStream());
 			clientOutput = new ServerOutput(s.getOutputStream());
 			clientInput.doRun();
-		} catch (IOException | ClientLeftException e) {
+		} catch (IOException | ClientLeftException | ServerProtocolException e) {
 			serverLogger.systemMessage(e.getMessage());
 			finish();
-		} catch (ServerProtocolException e) {
-			serverLogger.systemMessage(e.getMessage());
 		}
 	}
 
@@ -91,7 +89,6 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 			}
 		} else {
 			if (serverModel.changeUserName(player.getName(), name, this)) {
-				player.setName(name);
 				serverLogger.clientGotName(socket.getLocalSocketAddress().toString(), name);
 				clientOutput.nameOk();
 			} else {
@@ -112,7 +109,6 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 	public void commandeCreateRoom(String name) {
 		if (this.isNavigator()) {
 			if (serverModel.createRoom(name, this)) {
-				clientState = ClientState.ST_PLAYER;
 				clientOutput.roomCreated();
 				clientOutput.roomEnteredPlayer();
 				serverLogger.clientCreatedRoom(socket.getInetAddress().toString(), player.getName(), name);
@@ -126,13 +122,7 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 	@Override
 	public void commandeEnterRoom(String name) {
 		if (this.isNavigator()) {
-			if (serverModel.entreRoom(player.getName(), name, this)) {
-				if (clientState == ClientState.ST_PLAYER) {
-					clientOutput.roomEnteredPlayer();
-				} else {
-					clientOutput.roomEnteredSpectator();
-				}
-			} else {
+			if (! serverModel.entreRoom(player.getName(), name, this)) {
 				clientOutput.roomDoesntExist();
 			}
 		}
@@ -141,7 +131,8 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 	@Override
 	public void commandePlayDice() {
 		if (this.isPlayer() && player.canRollDice()) {
-			// todo play the dice
+			int value = player.getRoom().rollTheDice(this);
+			player.setDice(value);
 		}
 	}
 
@@ -155,15 +146,17 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 	@Override
 	public void commandeExitRoom() {
 		if (this.isPlayer() || this.isSpectator()) {
-			// todo exit the room
+			player.getRoom().removePlayer(this);
+			player.setRoom(null);
 		}
 	}
 
 	@Override
 	public void commandeDisconnect() {
-		if (clientState != ClientState.ST_INIT) {
-			// todo disconnect
-		}
+		serverModel.unregisterUser(player.getName(), this);
+		player = null;
+		clientOutput.goodBye();
+		this.finish();
 	}
 
 	@Override
@@ -174,16 +167,20 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 	}
 
 	private synchronized void finish() {
+		String name = "unknown";
+		if (player != null) {
+			name = player.getName();
+			serverModel.unregisterUser(player.getName(), this);
+			player = null;
+			clientOutput.goodBye();
+		}
 		clientInput.stop();
 		try {
 			socket.close();
 		} catch (IOException e) {
 			serverLogger.systemMessage(e.getMessage());
 		}
-		if (player != null) {
-			//TODO serverModel.
-		}
-		serverLogger.clientDisconnected(socket.getLocalSocketAddress().toString(), player.getName());
+		serverLogger.clientDisconnected(socket.getLocalSocketAddress().toString(), name);
 	}
 
 	@Override
@@ -195,8 +192,8 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 
 	@Override
 	public void notifyShutdownRequested() {
-		// TODO maybe clean stuff here before you close
 		clientOutput.serverOff();
+		this.finish();
 	}
 
 	@Override
@@ -226,7 +223,8 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 	public void notifyRoomClosed() {
 		if (this.isPlayer() || this.isSpectator())
 			clientOutput.roomClosed();
-		// todo check that i'm no longer in a room
+		setClientState(ClientState.ST_NAVIGATOR);
+		player.setRoom(null);
 	}
 
 	@Override
@@ -249,6 +247,14 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 
 	public Player getPlayer() {
 		return player;
+	}
+
+	public void roomEnteredPlayer() {
+		clientOutput.roomEnteredPlayer();
+	}
+
+	public void roomEnteredSpectator() {
+		clientOutput.roomEnteredPlayer();
 	}
 
 	public void setClientState(ClientState clientState) {

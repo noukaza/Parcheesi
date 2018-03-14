@@ -10,6 +10,7 @@ public class Player {
 
 	private String name;
 
+	private boolean admine;
 	private boolean turn;
 	private boolean roll;
 
@@ -19,11 +20,8 @@ public class Player {
 
 	public Player(String name) {
 		this.name = name;
-		this.turn = false;
-		this.roll = false;
-		this.dice = 0;
 		this.room = null;
-		this.horses = new int[NUM_HORSES];
+		this.init();
 	}
 
 	@Override
@@ -38,6 +36,13 @@ public class Player {
 				&& Arrays.equals(that.horses, this.horses);
 	}
 
+	public boolean isAdmine() {
+		return admine;
+	}
+
+	public void setAdmine(boolean admine) {
+		this.admine = admine;
+	}
 	public String getName() {
 		return name;
 	}
@@ -96,5 +101,13 @@ public class Player {
 
 	public void setRoom(ServerGameRoom room) {
 		this.room = room;
+	}
+
+	public void init() {
+		this.turn = false;
+		this.roll = false;
+		this.admine = false;
+		this.dice = 0;
+		this.horses = new int[NUM_HORSES];
 	}
 }

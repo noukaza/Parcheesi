@@ -162,4 +162,11 @@ public interface ServerOutputProtocol {
 	 *
 	 */
 	void serverOff();
+
+	/**
+	 * Server notification to user when he leaves
+	 * <p>
+	 * GOOD BYE
+	 */
+	void goodBye();
 }

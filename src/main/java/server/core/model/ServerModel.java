@@ -25,7 +25,7 @@ public class ServerModel {
 		return false;
 	}
 
-	private void notifyRoomStatusChanged() {
+	public void notifyRoomStatusChanged() {
 		List<String> statusList = getAllRoomsStatus();
 		for (ClientHandler user : usersList.values())
 			user.notifyRoomStatusChanged(statusList);
@@ -50,8 +50,9 @@ public class ServerModel {
 		if (existUserName(oldName) && ! existUserName(newName)) {
 			usersList.remove(oldName);
 			usersList.put(newName, clientHandler);
-			if (! clientHandler.isNavigator()) {
-				// TODO notify all the users in his room that his name has changed
+			clientHandler.getPlayer().setName(newName);
+			if (clientHandler.isPlayer()) {
+				clientHandler.getPlayer().getRoom().notifyPlayersListChanged();
 			}
 			return true;
 		}
@@ -60,8 +61,8 @@ public class ServerModel {
 
 	public synchronized boolean createRoom(String name, ClientHandler admine) {
 		if (! existRoomName(name)) {
-			ServerGameRoom room = this.serverRooms.put(name, new ServerGameRoom(this, admine));
-			admine.getPlayer().setRoom(room);
+			this.serverRooms.put(name, new ServerGameRoom(name, this, admine));
+			admine.setClientState(ClientHandler.ClientState.ST_PLAYER);
 			notifyRoomStatusChanged();
 			return true;
 		}
@@ -71,13 +72,8 @@ public class ServerModel {
 	public synchronized boolean entreRoom(String userName, String roomName, ClientHandler clientHandler) {
 		if (existRoomName(roomName) && existUserName(userName)) {
 			ServerGameRoom room = serverRooms.get(roomName);
-			if (room.addPlayer(clientHandler)) {
-				clientHandler.setClientState(ClientHandler.ClientState.ST_PLAYER);
-				notifyRoomStatusChanged();
-			} else {
-				clientHandler.setClientState(ClientHandler.ClientState.ST_SPECTATOR);
-
-			}
+			room.addPlayer(clientHandler);
+			notifyRoomStatusChanged();
 			return true;
 		}
 		return false;
@@ -109,4 +105,10 @@ public class ServerModel {
 			user.notifyShutdownRequested();
 	}
 
+	public void removeRoom(String name, ServerGameRoom serverGameRoom) {
+		if (existRoomName(name)) {
+			serverRooms.remove(name, serverGameRoom);
+			notifyRoomStatusChanged();
+		}
+	}
 }

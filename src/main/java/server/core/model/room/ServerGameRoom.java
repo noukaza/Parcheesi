@@ -4,6 +4,7 @@ import server.core.handler.ClientHandler;
 import server.core.model.ServerModel;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Vector;
 
@@ -20,12 +21,17 @@ public class ServerGameRoom {
 
 	private Random random;
 
+	private String name;
+
 	private boolean gameStarted;
 
 	private ServerModel serverModel;
 
-	public ServerGameRoom(ServerModel serverModel, ClientHandler admine) {
+	public ServerGameRoom(String name, ServerModel serverModel, ClientHandler admine) {
+		this.name = name;
 		this.admine = admine;
+		this.admine.getPlayer().setAdmine(true);
+		this.admine.getPlayer().setRoom(this);
 		this.serverModel = serverModel;
 		this.spectators = new Vector<>();
 		this.players = new Vector<>();
@@ -34,16 +40,23 @@ public class ServerGameRoom {
 		players.add(admine);
 	}
 
-	public synchronized boolean addPlayer(ClientHandler clientHandler) {
+	public synchronized void addPlayer(ClientHandler clientHandler) {
 		if (players.size() < MAX_PLAYERS && ! gameStarted) {
 			players.add(clientHandler);
+			clientHandler.setClientState(ClientHandler.ClientState.ST_PLAYER);
+			clientHandler.roomEnteredPlayer();
 			notifyPlayersListChanged();
-			return true;
+		} else {
+			spectators.add(clientHandler);
+			clientHandler.setClientState(ClientHandler.ClientState.ST_SPECTATOR);
+			clientHandler.roomEnteredSpectator();
+			clientHandler.notifyPlayersListChanged(getPlayersList());
+			if (gameStarted) {
+				clientHandler.notifyGameStatusChanged(getGameStatus());
+			}
+			notifySpectatorsNumberChanged();
 		}
-		spectators.add(clientHandler);
-		// todo give this new spectator a notification of the game
-		notifySpectatorsNumberChanged();
-		return false;
+		clientHandler.getPlayer().setRoom(this);
 	}
 
 	private synchronized void notifySpectatorsNumberChanged() {
@@ -54,44 +67,86 @@ public class ServerGameRoom {
 			spectator.notifySpectatorsNumberChanged(size);
 	}
 
-	private synchronized void notifyPlayersListChanged() {
+	public synchronized void notifyPlayersListChanged() {
+		List<String> list = getPlayersList();
+		for (ClientHandler player : players)
+			player.notifyPlayersListChanged(list);
+		for (ClientHandler spectator : spectators)
+			spectator.notifyPlayersListChanged(list);
+	}
+
+	private synchronized void notifyGameStatusChanged() {
+		List<String> report = getGameStatus();
+		for (ClientHandler p : players)
+			p.notifyGameStatusChanged(report);
+		for (ClientHandler s : spectators)
+			s.notifyGameStatusChanged(report);
+	}
+
+	private synchronized List<String> getPlayersList() {
 		ArrayList<String> names = new ArrayList<>();
 		for (ClientHandler player : players)
 			names.add(player.getPlayer().getName());
-		for (ClientHandler player : players)
-			player.notifyPlayersListChanged(names);
-		for (ClientHandler spectator : spectators)
-			spectator.notifyPlayersListChanged(names);
+		return names;
+	}
+
+	private synchronized List<String> getGameStatus() {
+		if (gameStarted) {
+			ArrayList<String> lines = new ArrayList<>();
+			for (ClientHandler p : players) {
+				lines.add(p.getPlayer().getName());
+				int[] h = p.getPlayer().getHorses();
+				lines.add(h[0] + ":" + h[1] + ":" + h[2] + ":" + h[3]);
+			}
+			return lines;
+		}
+		return null;
 	}
 
 	public synchronized void removePlayer(ClientHandler clientHandler) {
 		if (clientHandler.equals(admine)) {
-			players.remove(admine);
+
+			admine.getPlayer().setAdmine(false);
+
+			int index = random.nextInt(players.size());
+			ClientHandler chosen = players.get(index);
+			this.admine = chosen;
+			chosen.getPlayer().setAdmine(true);
+
 			if (gameStarted) {
-				int index = players.indexOf(clientHandler);
-				// todo set a new this.admine =
-				// todo admine left so someone else should become the admine
-				players.insertElementAt(null, players.indexOf(clientHandler));
+				index = players.indexOf(clientHandler);
+				players.insertElementAt(null, index);
 			} else {
-				// todo in case the game didn't start
+				players.remove(admine);
 			}
+
+			notifyPlayersListChanged();
 		} else {
 			if (players.remove(clientHandler)) {
-				// todo notify that he left
-
+				notifyPlayersListChanged();
 			}
 		}
+		clientHandler.setClientState(ClientHandler.ClientState.ST_NAVIGATOR);
+		if (players.isEmpty())
+			serverModel.removeRoom(name, this);
+		else
+			serverModel.notifyRoomStatusChanged();
 	}
 
 	public synchronized void removeSpectator(ClientHandler clientHandler) {
 		if (spectators.remove(clientHandler)) {
-			// todo notify that he left
 			notifySpectatorsNumberChanged();
 		}
 	}
 
-	public int rollTheDice() {
-		return (random.nextInt(6) + 1);
+	public synchronized int rollTheDice(ClientHandler player) {
+		String name = player.getPlayer().getName();
+		int value = (random.nextInt(6) + 1);
+		for (ClientHandler p : players)
+			p.notifyDiceResult(name, value);
+		for (ClientHandler s : spectators)
+			s.notifyDiceResult(name, value);
+		return value;
 	}
 
 	public synchronized Vector<ClientHandler> getPlayers() {

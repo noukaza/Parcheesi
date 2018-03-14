@@ -109,4 +109,9 @@ public class ServerOutput implements ServerOutputProtocol {
 	public void serverOff() {
 		out.println("SERVER OFF");
 	}
+
+	@Override
+	public void goodBye() {
+		out.println("GOOD BYE");
+	}
 }
