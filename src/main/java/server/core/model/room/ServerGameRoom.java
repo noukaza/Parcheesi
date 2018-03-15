@@ -83,11 +83,15 @@ public class ServerGameRoom {
 			s.notifyGameStatusChanged(report);
 	}
 
-	private synchronized List<String> getPlayersList() {
+	public synchronized List<String> getPlayersList() {
 		ArrayList<String> names = new ArrayList<>();
 		for (ClientHandler player : players)
 			names.add(player.getPlayer().getName());
 		return names;
+	}
+
+	public synchronized int getSpectatorsNumber() {
+		return this.spectators.size();
 	}
 
 	private synchronized List<String> getGameStatus() {

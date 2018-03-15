@@ -19,6 +19,11 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 
 	private GameFrame model;
 
+	private String playerName, tmp_playerName;
+
+	private boolean spectator = false;
+	private boolean admine = false;
+
 	public ServerHandler(GameFrame model, Socket socket) {
 		this.socket = socket;
 		this.model = model;
@@ -42,6 +47,7 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 
 	@Override
 	public void nameOk() {
+		playerName = tmp_playerName;
 		model.serverAcceptedName();
 	}
 
@@ -52,27 +58,32 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 
 	@Override
 	public void roomCreated() {
+		admine = true;
 		//todo code here
 	}
 
 	@Override
 	public void roomClosed() {
-		//todo code here
+		spectator = false;
+		admine = false;
+		model.serverClosedRoom();
 	}
 
 	@Override
 	public void roomDoesntExist() {
-		//todo code here
+		model.serverRoomDoesntExist();
 	}
 
 	@Override
 	public void roomEnteredPlayer() {
-		//todo code here
+		spectator = false;
+		model.serverAllowedEnteringRoom();
 	}
 
 	@Override
 	public void roomEnteredSpectator() {
-		//todo code here
+		spectator = true;
+		model.serverAllowedEnteringRoom();
 	}
 
 	@Override
@@ -91,17 +102,17 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 
 	@Override
 	public void playersList(List<String> players) {
-		//todo code here
+		model.severSentPlayersList(players);
 	}
 
 	@Override
 	public void spectatorsNumber(int spectators) {
-		//todo code here
+		model.severSentSpectatorsNumber(spectators);
 	}
 
 	@Override
 	public void diceResult(String player, int value) {
-		//todo code here
+		model.serverSentDiceResult(player, value);
 	}
 
 	@Override
@@ -131,17 +142,19 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 
 	@Override
 	public void serverOff() {
-		//todo code here
+		model.serverShutDown();
+		finish();
 	}
 
 	@Override
 	public void goodBye() {
-		//todo code here
+		model.serverSaidGoodBye();
+		finish();
 	}
 
 	@Override
 	public void commandeName(String name) {
-		// todo add name
+		tmp_playerName = name;
 		clientOutput.commandeName(name);
 	}
 
@@ -152,7 +165,6 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 
 	@Override
 	public void commandeCreateRoom(String name) {
-		// todo add roomname to the handler
 		clientOutput.commandeCreateRoom(name);
 	}
 
@@ -184,6 +196,28 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 	@Override
 	public void commandeStartGame() {
 		clientOutput.commandeStartGame();
+	}
+
+	@Override
+	public void commandePlayersList() {
+		clientOutput.commandePlayersList();
+	}
+
+	@Override
+	public void commandeSpectatorsNumber() {
+		clientOutput.commandeSpectatorsNumber();
+	}
+
+	public boolean isAdmine() {
+		return admine;
+	}
+
+	public boolean isSpectator() {
+		return spectator;
+	}
+
+	public String getPlayerName() {
+		return playerName;
 	}
 
 	private void finish() {

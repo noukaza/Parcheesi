@@ -12,8 +12,6 @@ import java.util.ArrayList;
 
 public class NavigatorView extends JPanel {
 
-	private static String newLine = System.getProperty("line.separator");
-
 	private JButton disconnect_btn;
 	private JButton enterRoom_btn;
 	private JList<String> roomList_jl;
@@ -30,10 +28,10 @@ public class NavigatorView extends JPanel {
 		enterRoom_btn.addActionListener(e -> {
 			String name = roomList_jl.getSelectedValue();
 			if (name != null) {
-				System.out.println(name);
-				handler.commandeEnterRoom(name);
+				handler.commandeEnterRoom(name.split(":")[0]);
 			}
 		});
+		handler.commandeRoomList();
 	}
 
 	/**
@@ -55,8 +53,7 @@ public class NavigatorView extends JPanel {
 		createRoom_btn.addActionListener(e -> {
 			String roomName = JOptionPane.showInputDialog("Name of the room ");
 			if (! roomName.isEmpty()) {
-				String name = roomName.split("\n")[0];
-				handler.commandeCreateRoom(name);
+				handler.commandeCreateRoom(roomName);
 			}
 		});
 
@@ -109,5 +106,9 @@ public class NavigatorView extends JPanel {
 
 	public void serverRefusedRoomName() {
 		JOptionPane.showMessageDialog(null, "Room name is bad or already exist", "Error", JOptionPane.ERROR_MESSAGE);
+	}
+
+	public void serverRoomDoesntExist() {
+		JOptionPane.showMessageDialog(null, "Sorry, room doesn't exist anymore", "Error", JOptionPane.ERROR_MESSAGE);
 	}
 }

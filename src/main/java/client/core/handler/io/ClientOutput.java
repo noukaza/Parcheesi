@@ -61,4 +61,14 @@ public class ClientOutput implements ServerInputProtocol {
 	public void commandeStartGame() {
 		out.println("START GAME");
 	}
+
+	@Override
+	public void commandePlayersList() {
+		out.println("PLAYERS LIST");
+	}
+
+	@Override
+	public void commandeSpectatorsNumber() {
+		out.println("SPECTATORS NUMBER");
+	}
 }

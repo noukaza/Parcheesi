@@ -83,4 +83,18 @@ public interface ServerInputProtocol {
 	 *
 	 */
 	void commandeStartGame();
+
+	/**
+	 * To request the players list in a room
+	 * <p>
+	 * PLAYERS LIST
+	 */
+	void commandePlayersList();
+
+	/**
+	 * To request the spectators number in a room
+	 * <p>
+	 * SPECTATORS NUMBER
+	 */
+	void commandeSpectatorsNumber();
 }

@@ -70,7 +70,7 @@ public class ServerOutput implements ServerOutputProtocol {
 
 	@Override
 	public void spectatorsNumber(int spectators) {
-		out.println("SPECTATORS LIST");
+		out.println("SPECTATORS NUMBER");
 		out.println(spectators);
 	}
 

@@ -3,15 +3,14 @@ package client.core.gui;
 import client.core.handler.ServerHandler;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.TreeMap;
 
-/**
- * @author NouakazaPc
- */
+
 public class RoomView extends JPanel {
 
+	private static final String SPECTATORS = "SPECTATORS: ";
 	private JToggleButton c0;
 	private JToggleButton c1;
 	private JToggleButton c10;
@@ -134,23 +133,21 @@ public class RoomView extends JPanel {
 	private String player3 = "player3";
 
 	private List<JToggleButton> map;
-	private TreeMap<String, List<JRadioButton>> bases;
-	private TreeMap<String, List<JToggleButton>> laststeps;
-	private TreeMap<String, JLabel> endStatus;
 
-	private List<String> playersNames;
+	private List<List<JRadioButton>> bases;
+	private List<List<JToggleButton>> laststeps;
+
+	private List<JLabel> endStatus;
 	private List<JLabel> playersLabels;
 
 	private boolean started = false;
 
 	private ServerHandler handler;
-	private GameFrame gameFrame;
 
     /**
      * Creates new form RoomView
      */
-    public RoomView(GameFrame gameFrame, ServerHandler handler) {
-	    this.gameFrame = gameFrame;
+    public RoomView(ServerHandler handler) {
 	    this.handler = handler;
 
 	    initComponents();
@@ -1176,28 +1173,27 @@ public class RoomView extends JPanel {
 				c45, c46, c47, c48, c49, c50, c51, c52, c53, c54, c55, c56, c57, c58, c59
 		);
 
-		this.bases = new TreeMap<>();
-		this.laststeps = new TreeMap<>();
-		this.endStatus = new TreeMap<>();
+		this.bases = new ArrayList<>();
+		this.laststeps = new ArrayList<>();
+		this.endStatus = new ArrayList<>();
 
-		bases.put(player0, Arrays.asList(h00, h01, h02, h03));
-		bases.put(player1, Arrays.asList(h10, h11, h12, h13));
-		bases.put(player2, Arrays.asList(h20, h21, h22, h23));
-		bases.put(player3, Arrays.asList(h30, h31, h32, h33));
+		bases.add(Arrays.asList(h00, h01, h02, h03));
+		bases.add(Arrays.asList(h10, h11, h12, h13));
+		bases.add(Arrays.asList(h20, h21, h22, h23));
+		bases.add(Arrays.asList(h30, h31, h32, h33));
 
-		laststeps.put(player0, Arrays.asList(p00, p01, p02, p03, p04, p05));
-		laststeps.put(player1, Arrays.asList(p10, p11, p12, p13, p14, p15));
-		laststeps.put(player2, Arrays.asList(p20, p21, p22, p23, p24, p25));
-		laststeps.put(player3, Arrays.asList(p30, p31, p32, p33, p34, p35));
+		laststeps.add(Arrays.asList(p00, p01, p02, p03, p04, p05));
+		laststeps.add(Arrays.asList(p10, p11, p12, p13, p14, p15));
+		laststeps.add(Arrays.asList(p20, p21, p22, p23, p24, p25));
+		laststeps.add(Arrays.asList(p30, p31, p32, p33, p34, p35));
 
-		endStatus.put(player0, savedp0_jlb);
-		endStatus.put(player1, savedp1_jlb);
-		endStatus.put(player2, savedp2_jlb);
-		endStatus.put(player3, savedp3_jlb);
+		endStatus.add(savedp0_jlb);
+		endStatus.add(savedp1_jlb);
+		endStatus.add(savedp2_jlb);
+		endStatus.add(savedp3_jlb);
 
 
 		playersLabels = Arrays.asList(player0_jlb, player1_jlb, player2_jlb, player3_jlb);
-		playersNames = Arrays.asList(player0, player1, player2, player3);
 
 		dice_btn.addActionListener(e -> handler.commandePlayDice());
 		start_btn.addActionListener(e -> handler.commandeStartGame());
@@ -1209,38 +1205,20 @@ public class RoomView extends JPanel {
 		});
 	}
 
-	public void spectatorsNumberChanged(int n) {
-		spectators_jlb.setText("Spectators : " + n);
+	public void severSentSpectatorsNumber(int spectators) {
+		spectators_jlb.setText(SPECTATORS + spectators);
 	}
 
-	public void diceResult(int value) {
+	public void serverSentDiceResult(String player, int value) {
+		if (handler.getPlayerName().equals(player))
+			diceResult_jlb.setText("YOUR DICE = " + value);
+		else
+			diceResult_jlb.setText(player + " DICE = " + value);
 		// todo find all the possible plays with this value and add them to the list
-		diceResult_jlb.setText("DICE = " + value);
 	}
 
-	public void playersListChanged(List<String> list) {
-		for (int i = 0; i < list.size(); i++)
-			playersLabels.get(i).setText(list.get(i));
-
-		if (started) {
-			for (int i = 0; i < list.size(); i++) {
-
-				List<JRadioButton> b = bases.get(playersNames.get(i));
-				List<JToggleButton> s = laststeps.get(playersNames.get(i));
-				JLabel l = endStatus.get(playersNames.get(i));
-
-				laststeps.remove(playersNames.get(i));
-				bases.remove(playersNames.get(i));
-				endStatus.remove(playersNames.get(i));
-
-				playersNames.set(i, list.get(i));
-
-				laststeps.put(playersNames.get(i), s);
-				bases.put(playersNames.get(i), b);
-				endStatus.put(playersNames.get(i), l);
-			}
-		}
+	public void severSentPlayersList(List<String> players) {
+		for (int i = 0; i < players.size(); i++)
+			playersLabels.get(i).setText(players.get(i));
 	}
-
-	// todo public void onGameUpdate()
 }

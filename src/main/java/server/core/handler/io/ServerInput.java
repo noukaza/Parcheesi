@@ -17,7 +17,8 @@ public class ServerInput {
 	private static final String CREATE_ROOM = "CREATE ROOM";
 	private static final String ENTER_ROOM = "ENTER ROOM";
 	private static final String EXIT_ROOM = "EXIT ROOM";
-
+	private static final String PLAYERS_LIST = "PLAYERS LIST";
+	private static final String SPECTATORS_NUMBER = "SPECTATORS NUMBER";
 	private static final String START_GAME = "START GAME";
 	private static final String PLAY_DICE = "PLAY DICE";
 	private static final String MOVE_HORSE = "MOVE HORSE";
@@ -62,6 +63,12 @@ public class ServerInput {
 						break;
 					case EXIT_ROOM:
 						handler.commandeExitRoom();
+						break;
+					case PLAYERS_LIST:
+						handler.commandePlayersList();
+						break;
+					case SPECTATORS_NUMBER:
+						handler.commandeSpectatorsNumber();
 						break;
 					case START_GAME:
 						handler.commandeStartGame();

@@ -3,11 +3,11 @@ package client.core.gui;
 
 import client.core.handler.ServerHandler;
 
+import javax.swing.*;
 import java.util.ArrayList;
+import java.util.List;
 
-/**
- * @author NouakazaPc
- */
+
 public class GameFrame extends javax.swing.JFrame {
 
 	private InitView initView;
@@ -35,18 +35,6 @@ public class GameFrame extends javax.swing.JFrame {
 		    java.util.logging.Logger.getLogger(GameFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 	    }
     }
-
-	public void serverAcceptedName() {
-		initView = null;
-		navigatorView = new NavigatorView(handler);
-		setPreferredSize(navigatorView.getPreferredSize());
-		setContentPane(navigatorView);
-		pack();
-    }
-
-	public void serverRefusedName() {
-		initView.chosenNameIsBad();
-	}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -84,6 +72,18 @@ public class GameFrame extends javax.swing.JFrame {
 		setVisible(true);
 	}
 
+	public void serverAcceptedName() {
+		navigatorView = new NavigatorView(handler);
+		setPreferredSize(navigatorView.getPreferredSize());
+		setContentPane(navigatorView);
+		pack();
+		initView = null;
+	}
+
+	public void serverRefusedName() {
+		initView.chosenNameIsBad();
+	}
+
 	public void updateRoomsList(ArrayList<String> names, ArrayList<Integer> players, ArrayList<Integer> spectators) {
 		if (navigatorView != null) {
 			navigatorView.updateRoomsList(names, players, spectators);
@@ -93,6 +93,63 @@ public class GameFrame extends javax.swing.JFrame {
 	public void serverRefusedRoomName() {
 		if (navigatorView != null) {
 			navigatorView.serverRefusedRoomName();
+		}
+	}
+
+	public void serverRoomDoesntExist() {
+		if (navigatorView != null) {
+			navigatorView.serverRoomDoesntExist();
+		}
+	}
+
+	public void serverAllowedEnteringRoom() {
+		roomView = new RoomView(handler);
+		setPreferredSize(roomView.getPreferredSize());
+		setContentPane(roomView);
+		pack();
+		navigatorView = null;
+		if (handler.isSpectator()) {
+			// todo disactivate all buttons
+		} else {
+			// todo check if server sends all players list and spectators or not
+			// todo if server is not sending who's in the room, we need to do that
+		}
+	}
+
+	public void serverSaidGoodBye() {
+		setVisible(false);
+		dispose();
+	}
+
+	public void serverShutDown() {
+		JOptionPane.showMessageDialog(this, "Server shut down", "Error", JOptionPane.ERROR_MESSAGE);
+		setVisible(false);
+		dispose();
+	}
+
+	public void serverClosedRoom() {
+		navigatorView = new NavigatorView(handler);
+		setPreferredSize(navigatorView.getPreferredSize());
+		setContentPane(navigatorView);
+		pack();
+		roomView = null;
+	}
+
+	public void severSentSpectatorsNumber(int spectators) {
+		if (roomView != null) {
+			roomView.severSentSpectatorsNumber(spectators);
+		}
+	}
+
+	public void serverSentDiceResult(String player, int value) {
+		if (roomView != null) {
+			roomView.serverSentDiceResult(player, value);
+		}
+	}
+
+	public void severSentPlayersList(List<String> players) {
+		if (roomView != null) {
+			roomView.severSentPlayersList(players);
 		}
 	}
 }

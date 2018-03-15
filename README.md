@@ -39,8 +39,10 @@ To disconnect
 	
 To start the game only the admin can start the game 
 
-	
- 
+	PLAYERS LIST
+
+To request the players list in a room
+
 ### Output :
 
 

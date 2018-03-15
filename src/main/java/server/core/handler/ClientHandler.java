@@ -166,6 +166,20 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 		}
 	}
 
+	@Override
+	public void commandePlayersList() {
+		if (this.isPlayer() || this.isSpectator()) {
+			clientOutput.playersList(player.getRoom().getPlayersList());
+		}
+	}
+
+	@Override
+	public void commandeSpectatorsNumber() {
+		if (this.isPlayer() || this.isSpectator()) {
+			clientOutput.spectatorsNumber(player.getRoom().getSpectatorsNumber());
+		}
+	}
+
 	private synchronized void finish() {
 		String name = "unknown";
 		if (player != null) {
