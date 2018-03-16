@@ -108,7 +108,7 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 	@Override
 	public void commandeCreateRoom(String name) {
 		if (this.isNavigator()) {
-			if (serverModel.createRoom(name, this)) {
+			if (!name.contains(":") && serverModel.createRoom(name, this)) {
 				clientOutput.roomCreated();
 				clientOutput.roomEnteredPlayer();
 				serverLogger.clientCreatedRoom(socket.getInetAddress().toString(), player.getName(), name);
@@ -139,7 +139,8 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 	@Override
 	public void commandeMoveTheHorse(int horse) {
 		if (this.isPlayer() && player.canPlay()) {
-			// todo move the horse chosen
+			if (!(horse >= 0 && horse <= 3 && player.getRoom().playerMovedHorse(this, horse)))
+				clientOutput.badMove();
 		}
 	}
 
@@ -162,7 +163,9 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 	@Override
 	public void commandeStartGame() {
 		if (this.isPlayer()) {
-			// TODO check if he's an admin and there is at least two players
+			if (!player.getRoom().startGame(this)) {
+				clientOutput.roomError();
+			}
 		}
 	}
 
@@ -185,9 +188,8 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 
 	@Override
 	public void notifyRoomStatusChanged(List<String> roomsStatus) {
-		if (this.isNavigator()) {
+		if (this.isNavigator())
 			clientOutput.roomList(roomsStatus);
-		}
 	}
 
 	@Override
@@ -198,7 +200,8 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 
 	@Override
 	public void notifyGameStarted() {
-		//TODO game started
+		if (this.isPlayer() || this.isSpectator())
+			clientOutput.gameStarted();
 	}
 
 	@Override
@@ -249,12 +252,14 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 		return player;
 	}
 
-	public void roomEnteredPlayer() {
+	@Override
+	public void notifyRoomEnteredPlayer() {
 		clientOutput.roomEnteredPlayer();
 	}
 
-	public void roomEnteredSpectator() {
-		clientOutput.roomEnteredPlayer();
+	@Override
+	public void notifyRoomEnteredSpectator() {
+		clientOutput.roomEnteredSpectator();
 	}
 
 	public void setClientState(ClientState clientState) {
@@ -265,7 +270,7 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 		return clientState == ClientState.ST_SPECTATOR;
 	}
 
-	public synchronized boolean isNavigator() {
+	private synchronized boolean isNavigator() {
 		return clientState == ClientState.ST_NAVIGATOR;
 	}
 

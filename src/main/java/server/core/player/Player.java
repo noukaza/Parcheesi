@@ -43,6 +43,7 @@ public class Player {
 	public void setAdmine(boolean admine) {
 		this.admine = admine;
 	}
+
 	public String getName() {
 		return name;
 	}
@@ -84,6 +85,8 @@ public class Player {
 	}
 
 	public void moveHorse(int index, int value) {
+		if (horses[index] + value >= 67)
+			this.horses[index] = 67;
 		this.horses[index] = value;
 	}
 
@@ -109,5 +112,9 @@ public class Player {
 		this.admine = false;
 		this.dice = 0;
 		this.horses = new int[NUM_HORSES];
+	}
+
+	public boolean won() {
+		return (horses[0] == 67 && horses[1] == 67 && horses[2] == 67 && horses[3] == 67);
 	}
 }

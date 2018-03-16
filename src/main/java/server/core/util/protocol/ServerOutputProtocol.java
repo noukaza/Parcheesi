@@ -39,7 +39,7 @@ public interface ServerOutputProtocol {
 
 	/**
 	 * Means that the room is closed
-	 * <p>
+	 *
 	 * ROOM CLOSED
 	 */
 	void roomClosed();
@@ -142,7 +142,7 @@ public interface ServerOutputProtocol {
 	 * the game notification when the player does
 	 * a bad move, either chosen a wrong horse or
 	 * tried to do a bad commande
-	 * <p>
+	 *
 	 * BAD MOVE
 	 */
 	void badMove();
@@ -176,6 +176,7 @@ public interface ServerOutputProtocol {
 	 * Server notification to user when he leaves
 	 *
 	 * GOOD BYE
+	 *
 	 */
 	void goodBye();
 }
