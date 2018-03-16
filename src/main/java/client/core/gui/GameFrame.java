@@ -3,6 +3,7 @@ package client.core.gui;
 
 import client.core.handler.ServerHandler;
 
+import javax.swing.*;
 import java.util.ArrayList;
 
 /**
@@ -95,4 +96,59 @@ public class GameFrame extends javax.swing.JFrame {
 			navigatorView.serverRefusedRoomName();
 		}
 	}
+
+    public void serverSentRoomDoesntExist() {
+        if (navigatorView != null)
+            JOptionPane.showMessageDialog(null, "Room doesn't exist !!", "Error", JOptionPane.ERROR_MESSAGE);
+
+    }
+
+    public void serverAcceptedRoom() {
+
+
+    }
+
+    public void serverIsOff() {
+        JOptionPane.showMessageDialog(null, "oops... server is off !!", "Error", JOptionPane.ERROR_MESSAGE);
+        roomView = null;
+        initView = null;
+        navigatorView = null;
+    }
+
+    public void serverSendTheWinner(String player) {
+        if (roomView != null) {
+            roomView = null;
+            JOptionPane.showMessageDialog(null, "the winner is: " + player, "Winner", JOptionPane.PLAIN_MESSAGE);
+            navigatorView = new NavigatorView(handler);
+            setPreferredSize(navigatorView.getPreferredSize());
+            setContentPane(navigatorView);
+            pack();
+            setLocationRelativeTo(null);
+            setVisible(true);
+        }
+    }
+
+    public void serverRefusedTheMove() {
+        if (roomView != null)
+            JOptionPane.showMessageDialog(null, "bad move!! sory", "Error", JOptionPane.ERROR_MESSAGE);
+
+    }
+
+    public void serverSentPlayerTurn(String player) {
+        if (roomView != null)
+            JOptionPane.showMessageDialog(null, player + " it's your turn", "turn", JOptionPane.PLAIN_MESSAGE);
+
+    }
+
+    public void serverSentDiceResult(String player, int value) {
+        if (roomView != null) {
+            roomView.serverSentDiceResult(player, value);
+        }
+    }
+
+    public void serversentSpectatorsNumber(int spectators) {
+        if (roomView != null) {
+            roomView.serversentSpectatorsNumber(spectators);
+        }
+    }
 }

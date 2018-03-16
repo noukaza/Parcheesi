@@ -1242,5 +1242,13 @@ public class RoomView extends JPanel {
 		}
 	}
 
+	public void serverSentDiceResult(String player, int value) {
+		diceResult_jlb.setText(player + " got : " + value);
+	}
+
+	public void serversentSpectatorsNumber(int spectators) {
+		spectators_jlb.setText("spectators : " + spectators);
+	}
+
 	// todo public void onGameUpdate()
 }

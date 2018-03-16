@@ -52,7 +52,7 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 
 	@Override
 	public void roomCreated() {
-		//todo code here
+        model.serverAcceptedRoom();
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 
 	@Override
 	public void roomDoesntExist() {
-		//todo code here
+        model.serverSentRoomDoesntExist();
 	}
 
 	@Override
@@ -96,12 +96,12 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 
 	@Override
 	public void spectatorsNumber(int spectators) {
-		//todo code here
+        model.serversentSpectatorsNumber(spectators);
 	}
 
 	@Override
 	public void diceResult(String player, int value) {
-		//todo code here
+        model.serverSentDiceResult(player, value);
 	}
 
 	@Override
@@ -111,12 +111,12 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 
 	@Override
 	public void playerTurn(String player) {
-		//todo code here
+        model.serverSentPlayerTurn(player);
 	}
 
 	@Override
 	public void badMove() {
-		//todo code here
+        model.serverRefusedTheMove();
 	}
 
 	@Override
@@ -126,17 +126,18 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 
 	@Override
 	public void winnerIs(String player) {
-		//todo code here
+        model.serverSendTheWinner(player);
 	}
 
 	@Override
 	public void serverOff() {
-		//todo code here
+        model.serverIsOff();
 	}
 
 	@Override
 	public void goodBye() {
-		//todo code here
+        //todo code here
+        clientOutput.commandeDisconnect();
 	}
 
 	@Override
