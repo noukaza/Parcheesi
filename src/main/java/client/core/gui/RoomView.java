@@ -3,142 +3,35 @@ package client.core.gui;
 import client.core.handler.ServerHandler;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.TreeMap;
 
-/**
- * @author NouakazaPc
- */
 public class RoomView extends JPanel {
 
-	private JToggleButton c0;
-	private JToggleButton c1;
-	private JToggleButton c10;
-	private JToggleButton c11;
-	private JToggleButton c12;
-	private JToggleButton c13;
-	private JToggleButton c14;
-	private JToggleButton c15;
-	private JToggleButton c16;
-	private JToggleButton c17;
-	private JToggleButton c18;
-	private JToggleButton c19;
-	private JToggleButton c2;
-	private JToggleButton c20;
-	private JToggleButton c21;
-	private JToggleButton c22;
-	private JToggleButton c23;
-	private JToggleButton c24;
-	private JToggleButton c25;
-	private JToggleButton c26;
-	private JToggleButton c27;
-	private JToggleButton c28;
-	private JToggleButton c29;
-	private JToggleButton c3;
-	private JToggleButton c30;
-	private JToggleButton c31;
-	private JToggleButton c32;
-	private JToggleButton c33;
-	private JToggleButton c34;
-	private JToggleButton c35;
-	private JToggleButton c36;
-	private JToggleButton c37;
-	private JToggleButton c38;
-	private JToggleButton c39;
-	private JToggleButton c4;
-	private JToggleButton c40;
-	private JToggleButton c41;
-	private JToggleButton c42;
-	private JToggleButton c43;
-	private JToggleButton c44;
-	private JToggleButton c45;
-	private JToggleButton c46;
-	private JToggleButton c47;
-	private JToggleButton c48;
-	private JToggleButton c49;
-	private JToggleButton c5;
-	private JToggleButton c50;
-	private JToggleButton c51;
-	private JToggleButton c52;
-	private JToggleButton c53;
-	private JToggleButton c54;
-	private JToggleButton c55;
-	private JToggleButton c56;
-	private JToggleButton c57;
-	private JToggleButton c58;
-	private JToggleButton c59;
-	private JToggleButton c6;
-	private JToggleButton c7;
-	private JToggleButton c8;
-	private JToggleButton c9;
+	private JToggleButton c0, c1, c10, c11, c12, c13, c14, c15, c16, c17, c18, c19, c2;
+	private JToggleButton c20, c21, c22, c23, c24, c25, c26, c27, c28, c29, c3, c30, c31;
+	private JToggleButton c32, c33, c34, c35, c36, c37, c38, c39, c4, c40, c41, c42, c43;
+	private JToggleButton c44, c45, c46, c47, c48, c49, c5, c50, c51, c52, c53, c54, c55, c56;
+	private JToggleButton c57, c58, c59, c6, c7, c8, c9;
 	private JLabel diceResult_jlb;
 	private JButton dice_btn;
-	private JRadioButton h00;
-	private JRadioButton h01;
-	private JRadioButton h02;
-	private JRadioButton h03;
-	private JRadioButton h10;
-	private JRadioButton h11;
-	private JRadioButton h12;
-	private JRadioButton h13;
-	private JRadioButton h20;
-	private JRadioButton h21;
-	private JRadioButton h22;
-	private JRadioButton h23;
-	private JRadioButton h30;
-	private JRadioButton h31;
-	private JRadioButton h32;
-	private JRadioButton h33;
+	private JRadioButton h00, h01, h02, h03, h10, h11, h12, h13, h20, h21, h22, h23, h30, h31, h32, h33;
 	private JList<String> horseOptionList_jl;
 	private JButton quit_btn;
 	private JButton start_btn;
 	private JLabel spectators_jlb;
-	private JLabel savedp0_jlb;
-	private JLabel savedp1_jlb;
-	private JLabel savedp2_jlb;
-	private JLabel savedp3_jlb;
+	private JLabel savedp0_jlb, savedp1_jlb, savedp2_jlb, savedp3_jlb;
 	private JButton moveHorse_btn;
-	private JToggleButton p00;
-	private JToggleButton p01;
-	private JToggleButton p02;
-	private JToggleButton p03;
-	private JToggleButton p04;
-	private JToggleButton p05;
-	private JToggleButton p10;
-	private JToggleButton p11;
-	private JToggleButton p12;
-	private JToggleButton p13;
-	private JToggleButton p14;
-	private JToggleButton p15;
-	private JToggleButton p20;
-	private JToggleButton p21;
-	private JToggleButton p22;
-	private JToggleButton p23;
-	private JToggleButton p24;
-	private JToggleButton p25;
-	private JToggleButton p30;
-	private JToggleButton p31;
-	private JToggleButton p32;
-	private JToggleButton p33;
-	private JToggleButton p34;
-	private JToggleButton p35;
-	private JLabel player0_jlb;
-	private JLabel player1_jlb;
-	private JLabel player2_jlb;
-	private JLabel player3_jlb;
-
-	private String player0 = "player0";
-	private String player1 = "player1";
-	private String player2 = "player2";
-	private String player3 = "player3";
+	private JToggleButton p00, p01, p02, p03, p04, p05, p10, p11, p12, p13, p14, p15;
+	private JToggleButton p20, p21, p22, p23, p24, p25, p30, p31, p32, p33, p34, p35;
+	private JLabel player0_jlb, player1_jlb, player2_jlb, player3_jlb;
 
 	private List<JToggleButton> map;
-	private TreeMap<String, List<JRadioButton>> bases;
-	private TreeMap<String, List<JToggleButton>> laststeps;
-	private TreeMap<String, JLabel> endStatus;
+	private List<List<JRadioButton>> bases;
+	private List<List<JToggleButton>> laststeps;
+	private List<JLabel> endStatus;
 
-	private List<String> playersNames;
 	private List<JLabel> playersLabels;
 
 	private boolean started = false;
@@ -680,12 +573,16 @@ public class RoomView extends JPanel {
                                 .addContainerGap(21, Short.MAX_VALUE))
         );
 
+	    String player2 = "player2";
 	    player2_jlb.setText(player2);
 
+	    String player1 = "player1";
 	    player1_jlb.setText(player1);
 
+	    String player0 = "player0";
 	    player0_jlb.setText(player0);
 
+	    String player3 = "player3";
 	    player3_jlb.setText(player3);
 
         dice_btn.setText("PLAY DICE");
@@ -1176,28 +1073,22 @@ public class RoomView extends JPanel {
 				c45, c46, c47, c48, c49, c50, c51, c52, c53, c54, c55, c56, c57, c58, c59
 		);
 
-		this.bases = new TreeMap<>();
-		this.laststeps = new TreeMap<>();
-		this.endStatus = new TreeMap<>();
+		this.bases = new ArrayList<>();
+		this.laststeps = new ArrayList<>();
+		this.endStatus = Arrays.asList(savedp0_jlb, savedp1_jlb, savedp2_jlb, savedp3_jlb);
 
-		bases.put(player0, Arrays.asList(h00, h01, h02, h03));
-		bases.put(player1, Arrays.asList(h10, h11, h12, h13));
-		bases.put(player2, Arrays.asList(h20, h21, h22, h23));
-		bases.put(player3, Arrays.asList(h30, h31, h32, h33));
+		bases.add(Arrays.asList(h00, h01, h02, h03));
+		bases.add(Arrays.asList(h10, h11, h12, h13));
+		bases.add(Arrays.asList(h20, h21, h22, h23));
+		bases.add(Arrays.asList(h30, h31, h32, h33));
 
-		laststeps.put(player0, Arrays.asList(p00, p01, p02, p03, p04, p05));
-		laststeps.put(player1, Arrays.asList(p10, p11, p12, p13, p14, p15));
-		laststeps.put(player2, Arrays.asList(p20, p21, p22, p23, p24, p25));
-		laststeps.put(player3, Arrays.asList(p30, p31, p32, p33, p34, p35));
-
-		endStatus.put(player0, savedp0_jlb);
-		endStatus.put(player1, savedp1_jlb);
-		endStatus.put(player2, savedp2_jlb);
-		endStatus.put(player3, savedp3_jlb);
+		laststeps.add(Arrays.asList(p00, p01, p02, p03, p04, p05));
+		laststeps.add(Arrays.asList(p10, p11, p12, p13, p14, p15));
+		laststeps.add(Arrays.asList(p20, p21, p22, p23, p24, p25));
+		laststeps.add(Arrays.asList(p30, p31, p32, p33, p34, p35));
 
 
 		playersLabels = Arrays.asList(player0_jlb, player1_jlb, player2_jlb, player3_jlb);
-		playersNames = Arrays.asList(player0, player1, player2, player3);
 
 		dice_btn.addActionListener(e -> handler.commandePlayDice());
 		start_btn.addActionListener(e -> handler.commandeStartGame());
@@ -1209,9 +1100,6 @@ public class RoomView extends JPanel {
 		});
 	}
 
-	public void spectatorsNumberChanged(int n) {
-		spectators_jlb.setText("Spectators : " + n);
-	}
 
 	public void diceResult(int value) {
 		// todo find all the possible plays with this value and add them to the list
@@ -1221,25 +1109,6 @@ public class RoomView extends JPanel {
 	public void playersListChanged(List<String> list) {
 		for (int i = 0; i < list.size(); i++)
 			playersLabels.get(i).setText(list.get(i));
-
-		if (started) {
-			for (int i = 0; i < list.size(); i++) {
-
-				List<JRadioButton> b = bases.get(playersNames.get(i));
-				List<JToggleButton> s = laststeps.get(playersNames.get(i));
-				JLabel l = endStatus.get(playersNames.get(i));
-
-				laststeps.remove(playersNames.get(i));
-				bases.remove(playersNames.get(i));
-				endStatus.remove(playersNames.get(i));
-
-				playersNames.set(i, list.get(i));
-
-				laststeps.put(playersNames.get(i), s);
-				bases.put(playersNames.get(i), b);
-				endStatus.put(playersNames.get(i), l);
-			}
-		}
 	}
 
 	public void serverSentDiceResult(String player, int value) {
@@ -1250,5 +1119,4 @@ public class RoomView extends JPanel {
 		spectators_jlb.setText("spectators : " + spectators);
 	}
 
-	// todo public void onGameUpdate()
 }
