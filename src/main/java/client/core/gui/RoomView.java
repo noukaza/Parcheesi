@@ -1100,23 +1100,21 @@ public class RoomView extends JPanel {
 		});
 	}
 
-
-	public void diceResult(int value) {
-		// todo find all the possible plays with this value and add them to the list
-		diceResult_jlb.setText("DICE = " + value);
-	}
-
 	public void playersListChanged(List<String> list) {
 		for (int i = 0; i < list.size(); i++)
 			playersLabels.get(i).setText(list.get(i));
 	}
 
 	public void serverSentDiceResult(String player, int value) {
-		diceResult_jlb.setText(player + " got : " + value);
+		// todo find all the possible plays with this value and add them to the list
+		diceResult_jlb.setText("DICE = " + value);
 	}
 
 	public void serversentSpectatorsNumber(int spectators) {
 		spectators_jlb.setText("spectators : " + spectators);
 	}
 
+	public void updateGame(List<String> lines) {
+		//todo la formule pour calculer les button
+	}
 }

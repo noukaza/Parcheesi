@@ -57,7 +57,7 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 
 	@Override
 	public void roomClosed() {
-		//todo code here
+		model.serverSentRoomClosed();
 	}
 
 	@Override
@@ -67,12 +67,12 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 
 	@Override
 	public void roomEnteredPlayer() {
-		//todo code here
+		model.serverSentStatusPlayer();
 	}
 
 	@Override
 	public void roomEnteredSpectator() {
-		//todo code here
+		model.serverSentStatusSpectator();
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 
 	@Override
 	public void playersList(List<String> players) {
-		//todo code here
+		model.serverSentPlayerList(players);
 	}
 
 	@Override
@@ -106,7 +106,7 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 
 	@Override
 	public void gameUpdate(List<String> lines) {
-		//todo code here
+		model.serverUpdateGame(lines);
 	}
 
 	@Override
@@ -121,7 +121,7 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 
 	@Override
 	public void gameStarted() {
-		//todo code here
+		model.serverSentgGameStart();
 	}
 
 	@Override

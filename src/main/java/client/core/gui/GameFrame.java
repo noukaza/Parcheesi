@@ -5,6 +5,7 @@ import client.core.handler.ServerHandler;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author NouakazaPc
@@ -150,5 +151,37 @@ public class GameFrame extends javax.swing.JFrame {
         if (roomView != null) {
             roomView.serversentSpectatorsNumber(spectators);
         }
+    }
+
+    public void serverSentRoomClosed() {
+        if (roomView != null)
+            JOptionPane.showMessageDialog(null, "ROOM CLOSED !! ", "Error", JOptionPane.ERROR_MESSAGE);
+
+    }
+
+    public void serverSentStatusSpectator() {
+        if (roomView != null)
+            JOptionPane.showMessageDialog(null, "There's no more places as a player, you are a spectator ", "spectator", JOptionPane.PLAIN_MESSAGE);
+
+    }
+
+    public void serverSentStatusPlayer() {
+        if (roomView != null)
+            JOptionPane.showMessageDialog(null, "Welcom player ", "player", JOptionPane.PLAIN_MESSAGE);
+    }
+
+    public void serverSentPlayerList(List<String> players) {
+        if (roomView != null)
+            roomView.playersListChanged(players);
+    }
+
+    public void serverUpdateGame(List<String> lines) {
+        if (roomView != null)
+            roomView.updateGame(lines);
+    }
+
+    public void serverSentgGameStart() {
+        if (roomView != null)
+            JOptionPane.showMessageDialog(null, "The game started ", "Game", JOptionPane.PLAIN_MESSAGE);
     }
 }

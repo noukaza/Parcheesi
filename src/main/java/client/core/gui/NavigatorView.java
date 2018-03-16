@@ -8,6 +8,8 @@ package client.core.gui;
 import client.core.handler.ServerHandler;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class NavigatorView extends JPanel {
@@ -61,7 +63,14 @@ public class NavigatorView extends JPanel {
 		});
 
 		enterRoom_btn.setText("Enter room");
-
+		enterRoom_btn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				if (roomList_jl.getSelectedValue() != null) {
+					handler.commandeEnterRoom(roomList_jl.getSelectedValue());
+				}
+			}
+		});
 		jScrollPane1.setViewportView(roomList_jl);
 
 		disconnect_btn.setText("Logout");
