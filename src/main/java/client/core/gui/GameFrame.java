@@ -73,6 +73,10 @@ public class GameFrame extends javax.swing.JFrame {
 	}
 
 	public void serverAcceptedName() {
+		initNavigationView();
+	}
+
+	private void initNavigationView() {
 		navigatorView = new NavigatorView(handler);
 		setPreferredSize(navigatorView.getPreferredSize());
 		setContentPane(navigatorView);
@@ -128,11 +132,7 @@ public class GameFrame extends javax.swing.JFrame {
 	}
 
 	public void serverClosedRoom() {
-		navigatorView = new NavigatorView(handler);
-		setPreferredSize(navigatorView.getPreferredSize());
-		setContentPane(navigatorView);
-		pack();
-		roomView = null;
+		initNavigationView();
 	}
 
 	public void severSentSpectatorsNumber(int spectators) {
@@ -150,6 +150,36 @@ public class GameFrame extends javax.swing.JFrame {
 	public void severSentPlayersList(List<String> players) {
 		if (roomView != null) {
 			roomView.severSentPlayersList(players);
+		}
+	}
+
+	public void serverSentWinnerIs(String player) {
+		if (roomView != null) {
+			roomView.serverSentWinnerIs(player);
+		}
+	}
+
+	public void serverSentGameStarted() {
+		if (roomView != null) {
+			roomView.serverSentGameStarted();
+		}
+	}
+
+	public void serverSentPlayerTurn(String name) {
+		if (roomView != null) {
+			roomView.serverSentPlayerTurn(name);
+		}
+	}
+
+	public void serverSentBadMove() {
+		if (roomView != null) {
+			roomView.serverSentBadMove();
+		}
+	}
+
+	public void serverSentGameUpdate(ArrayList<String> players, ArrayList<int[]> horses) {
+		if (roomView != null) {
+			roomView.serverSentGameUpdate(players, horses);
 		}
 	}
 }

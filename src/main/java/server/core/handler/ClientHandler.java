@@ -145,6 +145,13 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 	}
 
 	@Override
+	public void commandePassTurn() {
+		if (this.isPlayer() && player.canPlay()) {
+			player.getRoom().playerPassedTurn();
+		}
+	}
+
+	@Override
 	public void commandeExitRoom() {
 		if (this.isPlayer() || this.isSpectator()) {
 			player.getRoom().removePlayer(this);

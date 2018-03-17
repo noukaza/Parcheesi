@@ -61,6 +61,11 @@ public interface ServerInputProtocol {
 	void commandeMoveTheHorse(int horse);
 
 	/**
+	 * To pass your turn, when you have nothing to play
+	 */
+	void commandePassTurn();
+
+	/**
 	 * To exit a room that you are already in
 	 *
 	 * EXIT ROOM
@@ -86,14 +91,14 @@ public interface ServerInputProtocol {
 
 	/**
 	 * To request the players list in a room
-	 * <p>
+	 *
 	 * PLAYERS LIST
 	 */
 	void commandePlayersList();
 
 	/**
 	 * To request the spectators number in a room
-	 * <p>
+	 *
 	 * SPECTATORS NUMBER
 	 */
 	void commandeSpectatorsNumber();

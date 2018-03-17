@@ -71,7 +71,8 @@ public class ServerGameRoom {
 	public synchronized void notifyPlayersListChanged() {
 		List<String> list = getPlayersList();
 		for (ClientHandler player : players)
-			player.notifyPlayersListChanged(list);
+			if (player != null)
+				player.notifyPlayersListChanged(list);
 		for (ClientHandler spectator : spectators)
 			spectator.notifyPlayersListChanged(list);
 	}
@@ -91,10 +92,11 @@ public class ServerGameRoom {
 			s.notifyGameStarted();
 	}
 
-	private synchronized List<String> getPlayersList() {
+	public synchronized List<String> getPlayersList() {
 		ArrayList<String> names = new ArrayList<>();
 		for (ClientHandler player : players)
-			names.add(player.getPlayer().getName());
+			if (player != null)
+				names.add(player.getPlayer().getName());
 		return names;
 	}
 
@@ -114,12 +116,7 @@ public class ServerGameRoom {
 	public synchronized void removePlayer(ClientHandler clientHandler) {
 		if (clientHandler.equals(admine)) {
 
-			admine.getPlayer().setAdmine(false);
-
-			int index = random.nextInt(players.size());
-			ClientHandler chosen = players.get(index);
-			this.admine = chosen;
-			chosen.getPlayer().setAdmine(true);
+			int index;
 
 			if (gameStarted) {
 				index = players.indexOf(clientHandler);
@@ -127,6 +124,12 @@ public class ServerGameRoom {
 			} else {
 				players.remove(admine);
 			}
+
+			admine.getPlayer().setAdmine(false);
+			index = random.nextInt(players.size());
+			ClientHandler chosen = players.get(index);
+			this.admine = chosen;
+			chosen.getPlayer().setAdmine(true);
 
 			notifyPlayersListChanged();
 		} else {
@@ -266,5 +269,17 @@ public class ServerGameRoom {
 				return i;
 		}
 		return -1;
+	}
+
+	public synchronized int getSpectatorsNumber() {
+		return this.spectators.size();
+	}
+
+	public void playerPassedTurn() {
+		turn = (turn + 1) % players.size();
+		if (players.get(turn) == null)
+			turn = (turn + 1) % players.size();
+		players.get(turn).getPlayer().willRollDice();
+		notifyPlayerTurn(players.get(turn).getPlayer().getName());
 	}
 }

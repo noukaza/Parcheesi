@@ -21,12 +21,15 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 
 	private String playerName, tmp_playerName;
 
+	private int[] horses;
+
 	private boolean spectator = false;
 	private boolean admine = false;
 
 	public ServerHandler(GameFrame model, Socket socket) {
 		this.socket = socket;
 		this.model = model;
+		horses = new int[4];
 	}
 
 	public void run() {
@@ -117,27 +120,46 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 
 	@Override
 	public void gameUpdate(List<String> lines) {
-		//todo code here
+		ArrayList<String> players = new ArrayList<>();
+		ArrayList<int[]> horses = new ArrayList<>();
+
+		for (int i = 0; i < lines.size(); i += 2) {
+			String name = lines.get(i);
+			players.add(name);
+			String[] h = lines.get(i + 1).split(":");
+			int[] hr = new int[4];
+			for (int j = 0; j < h.length; j++)
+				hr[j] = Integer.parseInt(h[j]);
+			if (name.equals(playerName))
+				this.horses = hr;
+			horses.add(hr);
+		}
+		model.serverSentGameUpdate(players, horses);
 	}
 
 	@Override
 	public void playerTurn(String player) {
-		//todo code here
+
+		if (player.equals(playerName))
+			model.serverSentPlayerTurn("Your");
+		else
+			model.serverSentPlayerTurn(player);
 	}
 
 	@Override
 	public void badMove() {
-		//todo code here
+		model.serverSentBadMove();
 	}
 
 	@Override
 	public void gameStarted() {
-		//todo code here
+		horses = new int[4];
+		model.serverSentGameStarted();
 	}
 
 	@Override
 	public void winnerIs(String player) {
-		//todo code here
+		model.serverSentWinnerIs(player);
 	}
 
 	@Override
@@ -184,6 +206,11 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 	}
 
 	@Override
+	public void commandePassTurn() {
+		clientOutput.commandePassTurn();
+	}
+
+	@Override
 	public void commandeExitRoom() {
 		clientOutput.commandeExitRoom();
 	}
@@ -214,6 +241,10 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 
 	public boolean isSpectator() {
 		return spectator;
+	}
+
+	public int[] getHorses() {
+		return horses;
 	}
 
 	public String getPlayerName() {

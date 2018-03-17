@@ -22,6 +22,7 @@ public class ServerInput {
 	private static final String START_GAME = "START GAME";
 	private static final String PLAY_DICE = "PLAY DICE";
 	private static final String MOVE_HORSE = "MOVE HORSE";
+	private static final String PASS_TURN = "PASS TURN";
 
 	private static final String EXIT_SERVER = "DISCONNECT";
 
@@ -72,6 +73,9 @@ public class ServerInput {
 						break;
 					case START_GAME:
 						handler.commandeStartGame();
+						break;
+					case PASS_TURN:
+						handler.commandePassTurn();
 						break;
 					case PLAY_DICE:
 						handler.commandePlayDice();

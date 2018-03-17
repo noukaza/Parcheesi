@@ -47,7 +47,12 @@ public class ClientOutput implements ServerInputProtocol {
 	    out.println(horse);
     }
 
-    @Override
+	@Override
+	public void commandePassTurn() {
+		out.println("PASS TURN");
+	}
+
+	@Override
     public void commandeExitRoom() {
 	    out.println("EXIT ROOM");
     }

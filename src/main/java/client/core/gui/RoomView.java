@@ -3,6 +3,7 @@ package client.core.gui;
 import client.core.handler.ServerHandler;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 
 public class RoomView extends JPanel {
 
+	private static final String SPECTATORS = "SPECTATORS ";
 	private JToggleButton c0, c1, c10, c11, c12, c13, c14, c15, c16, c17, c18, c19, c2;
 	private JToggleButton c20, c21, c22, c23, c24, c25, c26, c27, c28, c29, c3, c30, c31;
 	private JToggleButton c32, c33, c34, c35, c36, c37, c38, c39, c4, c40, c41, c42, c43;
@@ -38,12 +40,11 @@ public class RoomView extends JPanel {
 	private boolean started = false;
 
 	private ServerHandler handler;
-	private GameFrame gameFrame;
 
     /**
      * Creates new form RoomView
      */
-    public RoomView(ServerHandler handler) {
+    RoomView(ServerHandler handler) {
 	    this.handler = handler;
 
 	    initComponents();
@@ -573,33 +574,22 @@ public class RoomView extends JPanel {
                                 .addContainerGap(21, Short.MAX_VALUE))
         );
 
-	    String player2 = "player2";
+	    String player2 = " ";
 	    player2_jlb.setText(player2);
 
-	    String player1 = "player1";
+	    String player1 = " ";
 	    player1_jlb.setText(player1);
 
-	    String player0 = "player0";
+	    String player0 = " ";
 	    player0_jlb.setText(player0);
 
-	    String player3 = "player3";
+	    String player3 = " ";
 	    player3_jlb.setText(player3);
 
         dice_btn.setText("PLAY DICE");
 
         diceResult_jlb.setText("DICE = 0");
 
-        /*horseOptionList_jl.setModel(new AbstractListModel<String>() {
-            String[] strings = {"Horse 0", "Horse 1", "Horse 2", "Horse 3"};
-
-            public int getSize() {
-                return strings.length;
-            }
-
-            public String getElementAt(int i) {
-                return strings[i];
-            }
-        });*/
         jScrollPane1.setViewportView(horseOptionList_jl);
 
         moveHorse_btn.setText("Move horse");
@@ -1089,6 +1079,7 @@ public class RoomView extends JPanel {
 
 
 		playersLabels = Arrays.asList(player0_jlb, player1_jlb, player2_jlb, player3_jlb);
+		playersLabels.get(0).setText(handler.getPlayerName());
 
 		dice_btn.addActionListener(e -> handler.commandePlayDice());
 		start_btn.addActionListener(e -> handler.commandeStartGame());
@@ -1096,6 +1087,8 @@ public class RoomView extends JPanel {
 		moveHorse_btn.addActionListener(e -> {
 			if (horseOptionList_jl.getSelectedValue() != null) {
 				handler.commandeMoveTheHorse(horseOptionList_jl.getSelectedIndex());
+			} else {
+				handler.commandePassTurn();
 			}
 		});
 	}
@@ -1109,13 +1102,94 @@ public class RoomView extends JPanel {
 			diceResult_jlb.setText("YOUR DICE = " + value);
 		else
 			diceResult_jlb.setText(player + " DICE = " + value);
-		// todo find all the possible plays with this value and add them to the list
+		if (value < 6) {
+			int[] horses = handler.getHorses();
+			ArrayList<String> hrs = new ArrayList<>();
+			for (int i = 0; i < horses.length; i++) {
+				if (horses[i] > 0 && horses[i] <= 66)
+					hrs.add("Horse " + i);
+			}
+			horseOptionList_jl.setModel(new AbstractListModel<String>() {
+
+				public int getSize() {
+					return hrs.size();
+				}
+
+				public String getElementAt(int i) {
+					return hrs.get(i);
+				}
+			});
+		} else {
+			horseOptionList_jl.setModel(new AbstractListModel<String>() {
+				String[] horses = {"Horse 0", "Horse 1", "Horse 2", "Horse 3"};
+
+				public int getSize() {
+					return horses.length;
+				}
+
+				public String getElementAt(int i) {
+					return horses[i];
+				}
+			});
+		}
 	}
 
 	public void severSentPlayersList(List<String> players) {
-		for (int i = 0; i < players.size(); i++)
-			playersLabels.get(i).setText(players.get(i));
+		for (int i = 0; i < playersLabels.size(); i++)
+			if (i < players.size())
+				playersLabels.get(i).setText(players.get(i));
+			else
+				playersLabels.get(i).setText(" ");
 	}
 
-	// todo public void onGameUpdate()
+	public void serverSentWinnerIs(String player) {
+		JOptionPane.showMessageDialog(null, "Winner is " + player, "Winner", JOptionPane.INFORMATION_MESSAGE);
+	}
+
+	public void serverSentGameStarted() {
+		started = true;
+		JOptionPane.showMessageDialog(null, "Game Started", "Game", JOptionPane.INFORMATION_MESSAGE);
+	}
+
+	public void serverSentPlayerTurn(String name) {
+		diceResult_jlb.setText(name + " Turn !");
+	}
+
+	public void serverSentBadMove() {
+		JOptionPane.showMessageDialog(null, "That move is not accepted", "Bad move", JOptionPane.WARNING_MESSAGE);
+	}
+
+	public void serverSentGameUpdate(ArrayList<String> players, ArrayList<int[]> horses) {
+		if (started) {
+			Color color = Color.white;
+			for (int i = 0; i < players.size(); i++) {
+				playersLabels.get(i).setText(players.get(i));
+				if (i == 0)
+					color = Color.GREEN;
+				if (i == 1)
+					color = Color.RED;
+				if (i == 2)
+					color = Color.BLUE;
+				if (i == 3)
+					color = Color.YELLOW;
+				int[] h = horses.get(i);
+				for (int j = 0; j < h.length; j++) {
+					if (h[j] == 0)
+						bases.get(i).get(j).setSelected(true);
+					else if (h[j] <= 60)
+						map.get(h[j]).setBackground(color);
+					else if (h[j] > 60 && h[j] < 66) {
+						int xcase = ((15 * i + h[j]) % 60);
+						laststeps.get(i).get(xcase).setBackground(color);
+					} else {
+						// todo check all the horses at the end
+						int number = 0;
+						endStatus.get(i).setText(
+								endStatus.get(i).getText().split(":")[0] + " " + number
+						);
+					}
+				}
+			}
+		}
+	}
 }
