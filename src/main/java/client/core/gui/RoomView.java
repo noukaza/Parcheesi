@@ -1062,7 +1062,9 @@ public class RoomView extends JPanel {
 				c30, c31, c32, c33, c34, c35, c36, c37, c38, c39, c40, c41, c42, c43, c44,
 				c45, c46, c47, c48, c49, c50, c51, c52, c53, c54, c55, c56, c57, c58, c59
 		);
-
+		for (JToggleButton cas : map) {
+			cas.setEnabled(true);
+		}
 		this.bases = new ArrayList<>();
 		this.laststeps = new ArrayList<>();
 		this.endStatus = Arrays.asList(savedp0_jlb, savedp1_jlb, savedp2_jlb, savedp3_jlb);
@@ -1072,10 +1074,21 @@ public class RoomView extends JPanel {
 		bases.add(Arrays.asList(h20, h21, h22, h23));
 		bases.add(Arrays.asList(h30, h31, h32, h33));
 
+		for (List<JRadioButton> base : bases) {
+			for (JRadioButton c : base) {
+				c.setSelected(true);
+				c.setBackground(Color.WHITE);
+			}
+		}
+
 		laststeps.add(Arrays.asList(p00, p01, p02, p03, p04, p05));
 		laststeps.add(Arrays.asList(p10, p11, p12, p13, p14, p15));
 		laststeps.add(Arrays.asList(p20, p21, p22, p23, p24, p25));
 		laststeps.add(Arrays.asList(p30, p31, p32, p33, p34, p35));
+
+		for (List<JToggleButton> way : laststeps)
+			for (JToggleButton cas : way)
+				cas.setEnabled(true);
 
 
 		playersLabels = Arrays.asList(player0_jlb, player1_jlb, player2_jlb, player3_jlb);
@@ -1086,7 +1099,7 @@ public class RoomView extends JPanel {
 		quit_btn.addActionListener(e -> handler.commandeExitRoom());
 		moveHorse_btn.addActionListener(e -> {
 			if (horseOptionList_jl.getSelectedValue() != null) {
-				handler.commandeMoveTheHorse(horseOptionList_jl.getSelectedIndex());
+				handler.commandeMoveTheHorse(Integer.parseInt(horseOptionList_jl.getSelectedValue().split(":")[1].trim()));
 			} else {
 				handler.commandePassTurn();
 			}
@@ -1098,39 +1111,43 @@ public class RoomView extends JPanel {
 	}
 
 	public void serverSentDiceResult(String player, int value) {
-		if (handler.getPlayerName().equals(player))
-			diceResult_jlb.setText("YOUR DICE = " + value);
-		else
-			diceResult_jlb.setText(player + " DICE = " + value);
-		if (value < 6) {
-			int[] horses = handler.getHorses();
-			ArrayList<String> hrs = new ArrayList<>();
-			for (int i = 0; i < horses.length; i++) {
-				if (horses[i] > 0 && horses[i] <= 66)
-					hrs.add("Horse " + i);
+		if (handler.getPlayerName().equals(player)) {
+			diceResult_jlb.setText("Your DICE = " + value);
+			if (value < 6) {
+				int[] horses = handler.getHorses();
+				ArrayList<String> hrs = new ArrayList<>();
+				for (int i = 0; i < horses.length; i++)
+					if (horses[i] > 0 && horses[i] <= 66)
+						hrs.add("Horse : " + i);
+				if (hrs.isEmpty())
+					moveHorse_btn.setText("Pass my turn");
+				else
+					moveHorse_btn.setText("Move Horse");
+				horseOptionList_jl.setModel(new AbstractListModel<String>() {
+
+					public int getSize() {
+						return hrs.size();
+					}
+
+					public String getElementAt(int i) {
+						return hrs.get(i);
+					}
+				});
+			} else {
+				horseOptionList_jl.setModel(new AbstractListModel<String>() {
+					String[] horses = {"Horse : 0", "Horse : 1", "Horse : 2", "Horse : 3"};
+
+					public int getSize() {
+						return horses.length;
+					}
+
+					public String getElementAt(int i) {
+						return horses[i];
+					}
+				});
 			}
-			horseOptionList_jl.setModel(new AbstractListModel<String>() {
-
-				public int getSize() {
-					return hrs.size();
-				}
-
-				public String getElementAt(int i) {
-					return hrs.get(i);
-				}
-			});
 		} else {
-			horseOptionList_jl.setModel(new AbstractListModel<String>() {
-				String[] horses = {"Horse 0", "Horse 1", "Horse 2", "Horse 3"};
-
-				public int getSize() {
-					return horses.length;
-				}
-
-				public String getElementAt(int i) {
-					return horses[i];
-				}
-			});
+			diceResult_jlb.setText(player + " DICE = " + value);
 		}
 	}
 
@@ -1161,6 +1178,7 @@ public class RoomView extends JPanel {
 
 	public void serverSentGameUpdate(ArrayList<String> players, ArrayList<int[]> horses) {
 		if (started) {
+			cleanBoard();
 			Color color = Color.white;
 			for (int i = 0; i < players.size(); i++) {
 				playersLabels.get(i).setText(players.get(i));
@@ -1174,13 +1192,13 @@ public class RoomView extends JPanel {
 					color = Color.YELLOW;
 				int[] h = horses.get(i);
 				for (int j = 0; j < h.length; j++) {
+					int xcase = ((15 * i + h[j]) % 60);
 					if (h[j] == 0)
 						bases.get(i).get(j).setSelected(true);
-					else if (h[j] <= 60)
-						map.get(h[j]).setBackground(color);
-					else if (h[j] > 60 && h[j] < 66) {
-						int xcase = ((15 * i + h[j]) % 60);
-						laststeps.get(i).get(xcase).setBackground(color);
+					else if (xcase <= 60)
+						map.get(xcase - 1).setBackground(color);
+					else if (xcase < 66) {
+						laststeps.get(i).get(xcase - 1).setBackground(color);
 					} else {
 						// todo check all the horses at the end
 						int number = 0;
@@ -1191,5 +1209,22 @@ public class RoomView extends JPanel {
 				}
 			}
 		}
+	}
+
+	private void cleanBoard() {
+		for (JToggleButton cas : map) {
+			cas.setBackground(Color.WHITE);
+		}
+		for (List<JToggleButton> way : laststeps)
+			for (JToggleButton cas : way)
+				cas.setBackground(Color.WHITE);
+		for (List<JRadioButton> base : bases)
+			for (JRadioButton b : base)
+				b.setSelected(false);
+	}
+
+	public void spectatorMode() {
+		dice_btn.setEnabled(false);
+		start_btn.setEnabled(false);
 	}
 }

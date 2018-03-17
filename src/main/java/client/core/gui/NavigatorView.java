@@ -8,8 +8,6 @@ package client.core.gui;
 import client.core.handler.ServerHandler;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class NavigatorView extends JPanel {
@@ -54,18 +52,15 @@ public class NavigatorView extends JPanel {
 		createRoom_btn.setText("New room");
 		createRoom_btn.addActionListener(e -> {
 			String roomName = JOptionPane.showInputDialog("Name of the room ");
-			if (! roomName.isEmpty()) {
+			if (roomName != null && ! roomName.isEmpty()) {
 				handler.commandeCreateRoom(roomName);
 			}
 		});
 
 		enterRoom_btn.setText("Enter room");
-		enterRoom_btn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				if (roomList_jl.getSelectedValue() != null) {
-					handler.commandeEnterRoom(roomList_jl.getSelectedValue());
-				}
+		enterRoom_btn.addActionListener(actionEvent -> {
+			if (roomList_jl.getSelectedValue() != null) {
+				handler.commandeEnterRoom(roomList_jl.getSelectedValue());
 			}
 		});
 		jScrollPane1.setViewportView(roomList_jl);

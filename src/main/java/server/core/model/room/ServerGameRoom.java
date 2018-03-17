@@ -140,8 +140,26 @@ public class ServerGameRoom {
 		clientHandler.setClientState(ClientHandler.ClientState.ST_NAVIGATOR);
 		if (players.isEmpty())
 			serverModel.removeRoom(name, this);
-		else
+		else if (getPLayersNumber() == 1) {
+			notifyWeHaveAWinner(getLastPlayer());
+		} else
 			serverModel.notifyRoomStatusChanged();
+	}
+
+	private synchronized String getLastPlayer() {
+		for (ClientHandler player : players) {
+			if (player != null)
+				return player.getPlayer().getName();
+		}
+		return "no one";
+	}
+
+	private synchronized int getPLayersNumber() {
+		int i = 0;
+		for (ClientHandler player : players)
+			if (player != null)
+				i++;
+		return i;
 	}
 
 	public synchronized void removeSpectator(ClientHandler clientHandler) {
@@ -172,7 +190,7 @@ public class ServerGameRoom {
 
 	public synchronized boolean startGame(ClientHandler player) {
 		int MIN_PLAYERS = 2;
-		if (player.equals(admine) && players.size() > MIN_PLAYERS)
+		if (player.equals(admine) && players.size() >= MIN_PLAYERS)
 		{
 			for (ClientHandler p: players)
 				p.getPlayer().init();
@@ -252,8 +270,10 @@ public class ServerGameRoom {
 
 	private synchronized void notifyWeHaveAWinner(String name) {
 		for (ClientHandler p : players) {
-			p.notifyWinnerIs(name);
-			p.notifyRoomClosed();
+			if (p != null) {
+				p.notifyWinnerIs(name);
+				p.notifyRoomClosed();
+			}
 		}
 		for (ClientHandler s : spectators) {
 			s.notifyWinnerIs(name);

@@ -113,10 +113,7 @@ public class GameFrame extends javax.swing.JFrame {
 		pack();
 		navigatorView = null;
 		if (handler.isSpectator()) {
-			// todo disactivate all buttons
-		} else {
-			// todo check if server sends all players list and spectators or not
-			// todo if server is not sending who's in the room, we need to do that
+			roomView.spectatorMode();
 		}
 	}
 
@@ -181,5 +178,9 @@ public class GameFrame extends javax.swing.JFrame {
 		if (roomView != null) {
 			roomView.serverSentGameUpdate(players, horses);
 		}
+	}
+
+	public void playerNowIsNavigator() {
+		initNavigationView();
 	}
 }

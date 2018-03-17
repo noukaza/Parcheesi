@@ -212,6 +212,7 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 
 	@Override
 	public void commandeExitRoom() {
+		model.playerNowIsNavigator();
 		clientOutput.commandeExitRoom();
 	}
 

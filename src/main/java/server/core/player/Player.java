@@ -87,7 +87,7 @@ public class Player {
 	public void moveHorse(int index, int value) {
 		if (horses[index] + value >= 67)
 			this.horses[index] = 67;
-		this.horses[index] = value;
+		this.horses[index] += value;
 	}
 
 	public int getHorse(int index) {
