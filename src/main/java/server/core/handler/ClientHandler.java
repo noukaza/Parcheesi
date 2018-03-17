@@ -166,10 +166,10 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 
 	@Override
 	public void commandeDisconnect() {
+		serverLogger.clientDisconnected(socket.getInetAddress().toString(), getPlayer().getName());
 		serverModel.unregisterUser(player.getName(), this);
 		player = null;
 		clientOutput.goodBye();
-		serverLogger.clientDisconnected(socket.getInetAddress().toString(), getPlayer().getName());
 		this.finish();
 	}
 

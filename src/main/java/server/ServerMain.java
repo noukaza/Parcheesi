@@ -1,6 +1,8 @@
 package server;
 
-import server.core.ServerCore;
+import server.core.gui.ServerFrame;
+
+import javax.swing.*;
 
 /**
  * {@code ServerMain} represents the class main of the server
@@ -10,9 +12,20 @@ import server.core.ServerCore;
  */
 public class ServerMain {
 
+
 	public static void main(String[] args) {
-		int port = args.length == 1 ? Integer.parseInt(args[0]) : 1234;
-		new Thread(new ServerCore(port)).start();
+
+		try {
+			for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+				if ("Nimbus".equals(info.getName())) {
+					UIManager.setLookAndFeel(info.getClassName());
+					break;
+				}
+			}
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+			java.util.logging.Logger.getLogger(ServerFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+		}
+		java.awt.EventQueue.invokeLater(ServerFrame::new);
 	}
 
 }

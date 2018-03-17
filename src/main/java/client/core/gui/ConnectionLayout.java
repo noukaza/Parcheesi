@@ -3,8 +3,6 @@ package client.core.gui;
 import client.core.ClientCore;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class ConnectionLayout {
 	private JPanel connectionPanel;
@@ -22,23 +20,17 @@ public class ConnectionLayout {
 		frame.pack();
 		frame.setVisible(true);
 
-		connectButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int port = Integer.parseInt(port_tf.getText());
-				String serverAdress = serverAdress_tf.getText();
-				new Thread(new ClientCore(serverAdress, port)).start();
-				frame.setVisible(false);
-				frame.dispose();
-			}
+		connectButton.addActionListener(e -> {
+			int port = Integer.parseInt(port_tf.getText());
+			String serverAdress = serverAdress_tf.getText();
+			new Thread(new ClientCore(serverAdress, port)).start();
+			frame.setVisible(false);
+			frame.dispose();
 		});
 
-		cancelButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				frame.setVisible(false);
-				frame.dispose();
-			}
+		cancelButton.addActionListener(e -> {
+			frame.setVisible(false);
+			frame.dispose();
 		});
 	}
 }

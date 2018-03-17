@@ -1,5 +1,6 @@
 package server.core;
 
+import server.core.gui.ServerFrame;
 import server.core.handler.ClientHandler;
 import server.core.logger.IServerLogger;
 import server.core.model.ServerModel;
@@ -13,18 +14,19 @@ public class ServerCore implements Runnable {
 
 	private int port;
 	private ServerSocket serverSocket;
+	private ServerFrame serverFrame;
 
 	private boolean stop;
 
 	private ServerModel serverModel;
 	private IServerLogger serverLogger;
 
-	public ServerCore(int port) {
+	public ServerCore(ServerFrame serverFrame, int port) {
 		this.port = port;
-		this.serverLogger = new IServerLogger();
+		this.serverLogger = new IServerLogger(serverFrame);
 		this.serverModel = new ServerModel();
 		this.stop = false;
-
+		serverFrame.registerServer(this);
 		serverLogger.serverStarting(port);
 	}
 
