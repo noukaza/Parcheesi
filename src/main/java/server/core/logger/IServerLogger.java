@@ -48,23 +48,12 @@ public class IServerLogger implements Logger {
 	}
 
 	@Override
-	public void clientExitedRoom(String ip, String name, String roomName) {
-		System.out.println("client: [" + ip + "] " + name + ", exited room: " + roomName);
+	public void clientExitedRoom(String ip, String name) {
+		System.out.println("client: [" + ip + "] " + name + ", exited room");
 	}
 
 	@Override
-	public void clientWon(String ip, String name, String roomName) {
-		System.out.println("client: [" + ip + "] " + name + ", in room: " + roomName + " WON!!!");
+	public void clientWon(String ip, String name) {
+		System.out.println("client: [" + ip + "] " + name + " WON!!!");
 	}
-
-	@Override
-	public void clientLost(String ip, String name, String roomName) {
-		System.out.println("client: [" + ip + "] " + name + ", in room: " + roomName + " LOST!");
-	}
-
-	@Override
-	public void clientClosedRoom(String ip, String name, String roomName) {
-		System.out.println("client: [" + ip + "] " + name + ", closed room: " + roomName);
-	}
-
 }

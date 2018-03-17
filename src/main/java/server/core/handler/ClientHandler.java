@@ -124,6 +124,7 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 		if (this.isNavigator()) {
 			if (! serverModel.entreRoom(player.getName(), name, this)) {
 				clientOutput.roomDoesntExist();
+				serverLogger.clientEnteredRoom(socket.getInetAddress().toString(), player.getName(), name);
 			}
 		}
 	}
@@ -153,10 +154,14 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 
 	@Override
 	public void commandeExitRoom() {
-		if (this.isPlayer() || this.isSpectator()) {
+		if (this.isPlayer()) {
 			player.getRoom().removePlayer(this);
 			player.setRoom(null);
+		} else if (this.isSpectator()) {
+			player.getRoom().removeSpectator(this);
+			player.setRoom(null);
 		}
+		serverLogger.clientExitedRoom(socket.getInetAddress().toString(), player.getName());
 	}
 
 	@Override
@@ -164,12 +169,13 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 		serverModel.unregisterUser(player.getName(), this);
 		player = null;
 		clientOutput.goodBye();
+		serverLogger.clientDisconnected(socket.getInetAddress().toString(), getPlayer().getName());
 		this.finish();
 	}
 
 	@Override
 	public void commandeStartGame() {
-		if (this.isPlayer()) {
+		if (this.isPlayer() && ! player.getRoom().isGameStarted()) {
 			if (!player.getRoom().startGame(this)) {
 				clientOutput.roomError();
 			}
@@ -267,6 +273,8 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 	public void notifyWinnerIs(String player) {
 		if (this.isPlayer() || this.isSpectator())
 			clientOutput.winnerIs(player);
+		if (this.player.getName().equals(player))
+			serverLogger.clientWon(socket.getInetAddress().toString(), player);
 	}
 
 	public Player getPlayer() {

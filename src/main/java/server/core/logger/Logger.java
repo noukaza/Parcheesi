@@ -20,12 +20,8 @@ public interface Logger {
 
 	void clientEnteredRoom(String ip, String name, String roomName);
 
-	void clientExitedRoom(String ip, String name, String roomName);
+	void clientExitedRoom(String ip, String name);
 
-	void clientWon(String ip, String name, String roomName);
-
-	void clientLost(String ip, String name, String roomName);
-
-	void clientClosedRoom(String ip, String name, String roomName);
+	void clientWon(String ip, String name);
 
 }

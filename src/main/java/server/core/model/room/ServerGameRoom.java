@@ -125,18 +125,29 @@ public class ServerGameRoom {
 				players.remove(admine);
 			}
 
-			admine.getPlayer().setAdmine(false);
-			index = random.nextInt(players.size());
-			ClientHandler chosen = players.get(index);
+			ClientHandler chosen;
+			do {
+				admine.getPlayer().setAdmine(false);
+				index = random.nextInt(getPLayersNumber());
+				chosen = players.get(index);
+			} while (chosen == null);
+
 			this.admine = chosen;
 			chosen.getPlayer().setAdmine(true);
 
-			notifyPlayersListChanged();
 		} else {
-			if (players.remove(clientHandler)) {
-				notifyPlayersListChanged();
+
+			int index;
+
+			if (gameStarted) {
+				index = players.indexOf(clientHandler);
+				players.insertElementAt(null, index);
+			} else {
+				players.remove(clientHandler);
 			}
 		}
+
+		notifyPlayersListChanged();
 		clientHandler.setClientState(ClientHandler.ClientState.ST_NAVIGATOR);
 		if (players.isEmpty())
 			serverModel.removeRoom(name, this);
@@ -254,7 +265,7 @@ public class ServerGameRoom {
 			return false;
 	}
 
-	private void checkCrossedHorses(int player, int horse) {
+	private synchronized void checkCrossedHorses(int player, int horse) {
 		int xcase = ((15 * player + horse) % 60);
 		for (int i = 0; i < players.size(); i++) {
 			if (i != player) {
@@ -293,6 +304,10 @@ public class ServerGameRoom {
 
 	public synchronized int getSpectatorsNumber() {
 		return this.spectators.size();
+	}
+
+	public boolean isGameStarted() {
+		return gameStarted;
 	}
 
 	public void playerPassedTurn() {

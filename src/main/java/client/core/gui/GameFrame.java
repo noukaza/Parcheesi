@@ -182,5 +182,6 @@ public class GameFrame extends javax.swing.JFrame {
 
 	public void playerNowIsNavigator() {
 		initNavigationView();
+		handler.commandeRoomList();
 	}
 }

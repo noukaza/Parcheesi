@@ -1090,6 +1090,9 @@ public class RoomView extends JPanel {
 			for (JToggleButton cas : way)
 				cas.setEnabled(true);
 
+		dice_btn.setEnabled(false);
+		moveHorse_btn.setEnabled(false);
+		start_btn.setEnabled(false);
 
 		playersLabels = Arrays.asList(player0_jlb, player1_jlb, player2_jlb, player3_jlb);
 		playersLabels.get(0).setText(handler.getPlayerName());
@@ -1112,6 +1115,7 @@ public class RoomView extends JPanel {
 
 	public void serverSentDiceResult(String player, int value) {
 		if (handler.getPlayerName().equals(player)) {
+			moveHorse_btn.setEnabled(true);
 			diceResult_jlb.setText("Your DICE = " + value);
 			if (value < 6) {
 				int[] horses = handler.getHorses();
@@ -1122,7 +1126,7 @@ public class RoomView extends JPanel {
 				if (hrs.isEmpty())
 					moveHorse_btn.setText("Pass my turn");
 				else
-					moveHorse_btn.setText("Move Horse");
+					moveHorse_btn.setText("Move horse");
 				horseOptionList_jl.setModel(new AbstractListModel<String>() {
 
 					public int getSize() {
@@ -1148,10 +1152,13 @@ public class RoomView extends JPanel {
 			}
 		} else {
 			diceResult_jlb.setText(player + " DICE = " + value);
+			moveHorse_btn.setEnabled(false);
 		}
 	}
 
 	public void severSentPlayersList(List<String> players) {
+		if (players.size() >= 2)
+			start_btn.setEnabled(true);
 		for (int i = 0; i < playersLabels.size(); i++)
 			if (i < players.size())
 				playersLabels.get(i).setText(players.get(i));
@@ -1165,11 +1172,17 @@ public class RoomView extends JPanel {
 
 	public void serverSentGameStarted() {
 		started = true;
+		start_btn.setEnabled(false);
 		JOptionPane.showMessageDialog(null, "Game Started", "Game", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	public void serverSentPlayerTurn(String name) {
 		diceResult_jlb.setText(name + " Turn !");
+		if (name.equals("Your")) {
+			dice_btn.setEnabled(true);
+		} else {
+			dice_btn.setEnabled(false);
+		}
 	}
 
 	public void serverSentBadMove() {
@@ -1226,5 +1239,6 @@ public class RoomView extends JPanel {
 	public void spectatorMode() {
 		dice_btn.setEnabled(false);
 		start_btn.setEnabled(false);
+		moveHorse_btn.setEnabled(false);
 	}
 }
