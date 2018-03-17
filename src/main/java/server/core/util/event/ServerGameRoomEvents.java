@@ -68,4 +68,15 @@ public interface ServerGameRoomEvents {
 	 */
 	void notifyWinnerIs(String player);
 
+	/**
+	 * the game room notifies when you enter a room as
+	 * a player
+	 */
+	void notifyRoomEnteredPlayer();
+
+	/**
+	 * the game room notifies when you enter a room as
+	 * a spectator
+	 */
+	void notifyRoomEnteredSpectator();
 }

@@ -2,6 +2,7 @@ package server.core.model.room;
 
 import server.core.handler.ClientHandler;
 import server.core.model.ServerModel;
+import server.core.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,14 +11,13 @@ import java.util.Vector;
 
 public class ServerGameRoom {
 
-	private static int MAX_PLAYERS = 4;
-	private static int MIN_PLAYERS = 2;
-
 	private volatile Vector<ClientHandler> spectators;
 
 	private volatile Vector<ClientHandler> players;
 
 	private volatile ClientHandler admine;
+
+	private int turn = 0;
 
 	private Random random;
 
@@ -41,15 +41,16 @@ public class ServerGameRoom {
 	}
 
 	public synchronized void addPlayer(ClientHandler clientHandler) {
+		int MAX_PLAYERS = 4;
 		if (players.size() < MAX_PLAYERS && ! gameStarted) {
 			players.add(clientHandler);
 			clientHandler.setClientState(ClientHandler.ClientState.ST_PLAYER);
-			clientHandler.roomEnteredPlayer();
+			clientHandler.notifyRoomEnteredPlayer();
 			notifyPlayersListChanged();
 		} else {
 			spectators.add(clientHandler);
 			clientHandler.setClientState(ClientHandler.ClientState.ST_SPECTATOR);
-			clientHandler.roomEnteredSpectator();
+			clientHandler.notifyRoomEnteredSpectator();
 			clientHandler.notifyPlayersListChanged(getPlayersList());
 			if (gameStarted) {
 				clientHandler.notifyGameStatusChanged(getGameStatus());
@@ -83,15 +84,18 @@ public class ServerGameRoom {
 			s.notifyGameStatusChanged(report);
 	}
 
-	public synchronized List<String> getPlayersList() {
+	private synchronized void notifyGameStarted() {
+		for (ClientHandler p : players)
+			p.notifyGameStarted();
+		for (ClientHandler s : spectators)
+			s.notifyGameStarted();
+	}
+
+	private synchronized List<String> getPlayersList() {
 		ArrayList<String> names = new ArrayList<>();
 		for (ClientHandler player : players)
 			names.add(player.getPlayer().getName());
 		return names;
-	}
-
-	public synchronized int getSpectatorsNumber() {
-		return this.spectators.size();
 	}
 
 	private synchronized List<String> getGameStatus() {
@@ -146,6 +150,8 @@ public class ServerGameRoom {
 	public synchronized int rollTheDice(ClientHandler player) {
 		String name = player.getPlayer().getName();
 		int value = (random.nextInt(6) + 1);
+		player.getPlayer().wontRollDice();
+		player.getPlayer().willPlay();
 		for (ClientHandler p : players)
 			p.notifyDiceResult(name, value);
 		for (ClientHandler s : spectators)
@@ -159,5 +165,106 @@ public class ServerGameRoom {
 
 	public synchronized Vector<ClientHandler> getSpectators() {
 		return spectators;
+	}
+
+	public synchronized boolean startGame(ClientHandler player) {
+		int MIN_PLAYERS = 2;
+		if (player.equals(admine) && players.size() > MIN_PLAYERS)
+		{
+			for (ClientHandler p: players)
+				p.getPlayer().init();
+			gameStarted = true;
+			notifyGameStarted();
+			turn = 0;
+			players.get(turn).getPlayer().willRollDice();
+			notifyPlayerTurn(players.get(turn).getPlayer().getName());
+			return true;
+		}
+		return false;
+	}
+
+	private synchronized void notifyPlayerTurn(String name) {
+		for (ClientHandler p: players)
+			p.notifyPlayerTurn(name);
+		for (ClientHandler s: spectators)
+			s.notifyPlayerTurn(name);
+	}
+
+	public synchronized boolean playerMovedHorse(ClientHandler client, int index) {
+		boolean rightMove = true;
+		int dice = client.getPlayer().getDice();
+		int horse = client.getPlayer().getHorse(index);
+		if (dice == 6) {
+			if (horse == 0)
+				client.getPlayer().moveHorse(index, 1);
+			else if (horse >= 67)
+				rightMove = false;
+			else
+				client.getPlayer().moveHorse(index, dice);
+		} else {
+			if (horse == 0 || horse >= 67)
+				rightMove = false;
+			else
+				client.getPlayer().moveHorse(index, dice);
+		}
+		if (rightMove) {
+			int winner = doWeHaveAWinner();
+			if (winner >= 0) {
+				notifyWeHaveAWinner(players.get(index).getPlayer().getName());
+				return true;
+			}
+			checkCrossedHorses(players.indexOf(client), client.getPlayer().getHorse(index));
+			if (dice != 6) {
+				client.getPlayer().wontPlay();
+				turn = (turn + 1) % players.size();
+				if (players.get(turn) == null)
+					turn = (turn + 1) % players.size();
+				players.get(turn).getPlayer().willRollDice();
+				notifyGameStatusChanged();
+				notifyPlayerTurn(players.get(turn).getPlayer().getName());
+			} else {
+				notifyGameStatusChanged();
+				notifyPlayerTurn(players.get(turn).getPlayer().getName());
+				client.getPlayer().willRollDice();
+				client.getPlayer().wontPlay();
+			}
+			return true;
+		} else
+			return false;
+	}
+
+	private void checkCrossedHorses(int player, int horse) {
+		int xcase = ((15 * player + horse) % 60);
+		for (int i = 0; i < players.size(); i++) {
+			if (i != player) {
+				int[] horses = players.get(i).getPlayer().getHorses();
+				for (int j = 0; j < horses.length; j++) {
+					int ycase = ((15 * i + horses[j]) % 60);
+					if (ycase == xcase)
+						players.get(i).getPlayer().moveHorse(j, 0);
+				}
+			}
+		}
+	}
+
+	private synchronized void notifyWeHaveAWinner(String name) {
+		for (ClientHandler p : players) {
+			p.notifyWinnerIs(name);
+			p.notifyRoomClosed();
+		}
+		for (ClientHandler s : spectators) {
+			s.notifyWinnerIs(name);
+			s.notifyRoomClosed();
+		}
+		serverModel.removeRoom(this.name, this);
+	}
+
+	private synchronized int doWeHaveAWinner() {
+		for (int i = 0; i < players.size(); i++) {
+			Player player = players.get(i).getPlayer();
+			if (player.won())
+				return i;
+		}
+		return -1;
 	}
 }
