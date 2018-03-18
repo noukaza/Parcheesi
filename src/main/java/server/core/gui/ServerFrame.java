@@ -29,7 +29,7 @@ public class ServerFrame extends JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
+        setTitle("Server console");
 	    JPanel jPanel = new JPanel();
 	    JButton startServer_btn = new JButton();
 	    JButton closeServer_btn = new JButton();
@@ -41,8 +41,8 @@ public class ServerFrame extends JFrame {
         startServer_btn.setText("Start server");
 	    startServer_btn.addActionListener(evt -> {
 		    String answer = JOptionPane.showInputDialog(this,
-				    "Text",
-				    "[sample text to help input]",
+                    "choisir le numéro de port",
+                    "le numéro de port",
 				    JOptionPane.INFORMATION_MESSAGE);
 		    if (answer != null && ! answer.isEmpty()) {
 			    int port = Integer.parseInt(answer);
