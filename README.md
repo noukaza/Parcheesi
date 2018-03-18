@@ -15,27 +15,32 @@ What things you need to install the software and how to install them
 - Install **Intelij IDEA** *IDE* from [here](https://www.jetbrains.com/idea/).
 - Install **Java JDK - 1.8** from [here](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html).
 - Install **Maven** framework from [here](https://maven.apache.org/).
+- Install **Netcat** from [here](http://nc110.sourceforge.net/).
 
 in linux you can just do
 ```
 sudo apt-get update
+sudo apt-get install snap
+sudo snap install intellij-idea-ultimate --classic --edge
+sudo apt-get install openjdk-8-jdk
 sudo apt-get install maven
+sudo apt-get install netcat
 ```
 
-### Installing
+### Running the applications
 
-A step by step series of examples that tell you have to get a development env running
+you can find both the server and the client in the folder **build/**.
 
-Say what the step will be
+In windows you can just double click on them, but if you are using linux, follow our steps: 
 
+For the server
 ```
-Give the example
+java -jar server.jar
 ```
 
-And repeat
-
+And for the client
 ```
-until finished
+java -jar client.jar
 ```
 
 End with an example of getting some data out of the system or using it for a little demo
@@ -46,11 +51,16 @@ End with an example of getting some data out of the system or using it for a lit
 mvn install -B
 ```
 
+you need maven installed for this.
+
 ## Deployment
 
-Add additional notes about how to deploy this on a live system
+All the project points and options are covered in the work, 
+there might be bugs somewhere that we couldn't find during our testing proccess,
+but if you find any, we will be glad to know about them and fix them.
 
 ##GAME SERVER PROTOCOLE I/O
+In case you want test the server using netcat, you should follow these guidlines.
 ### Input:
 	NAME
 	user-name
