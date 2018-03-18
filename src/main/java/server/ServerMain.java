@@ -7,7 +7,7 @@ import javax.swing.*;
 /**
  * {@code ServerMain} represents the class main of the server
  *
- * @author Safiy ZAGHBANE
+ *
  * @see server.core.ServerCore
  */
 public class ServerMain {

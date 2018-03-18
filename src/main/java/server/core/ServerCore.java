@@ -31,7 +31,7 @@ public class ServerCore implements Runnable {
 
 	public void run() {
 		try {
-			ServerSocket serverSocket = new ServerSocket(port);
+			this.serverSocket = new ServerSocket(port);
 			serverSocket.setSoTimeout(10000);
 			while (! stop) {
 				try {

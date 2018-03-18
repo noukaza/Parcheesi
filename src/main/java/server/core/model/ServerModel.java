@@ -101,10 +101,13 @@ public class ServerModel {
 	}
 
 	public synchronized void serverClosing() {
-		for (ClientHandler user : usersList.values())
-			user.notifyShutdownRequested();
-		usersList.clear();
-		serverRooms.clear();
+		if (! usersList.isEmpty()) {
+			for (ClientHandler user : usersList.values())
+				user.notifyShutdownRequested();
+			usersList.clear();
+		}
+		if (! serverRooms.isEmpty())
+			serverRooms.clear();
 	}
 
 	public void removeRoom(String name, ServerGameRoom serverGameRoom) {
