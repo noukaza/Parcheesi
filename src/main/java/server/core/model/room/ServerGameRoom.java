@@ -315,6 +315,8 @@ public class ServerGameRoom {
 	}
 
 	public void playerPassedTurn() {
+		players.get(turn).getPlayer().wontPlay();
+		players.get(turn).getPlayer().wontRollDice();
 		turn = (turn + 1) % players.size();
 		if (players.get(turn) == null)
 			turn = (turn + 1) % players.size();

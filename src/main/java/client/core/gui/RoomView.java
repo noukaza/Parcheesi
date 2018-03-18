@@ -37,7 +37,7 @@ public class RoomView extends JPanel {
 
 	private List<JLabel> playersLabels;
 
-	private boolean started = false;
+
 
 	private ServerHandler handler;
 
@@ -1182,7 +1182,6 @@ public class RoomView extends JPanel {
 	}
 
 	public void serverSentGameStarted() {
-		started = true;
 		start_btn.setEnabled(false);
 		JOptionPane.showMessageDialog(null, "Game Started", "Game", JOptionPane.INFORMATION_MESSAGE);
 	}
@@ -1227,8 +1226,8 @@ public class RoomView extends JPanel {
 					laststeps.get(i).get((h[j] - 60) - 1).setBackground(color);
 				} else {
 					int number = 0;
-					for (int k = 0; k < h.length; k++)
-						if (h[k] > 66)
+					for (int v : h)
+						if (v > 66)
 							number++;
 					endStatus.get(i).setText(
 							endStatus.get(i).getText().split(":")[0] + ": " + number
