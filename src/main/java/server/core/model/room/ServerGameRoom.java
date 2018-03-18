@@ -63,7 +63,8 @@ public class ServerGameRoom {
 	private synchronized void notifySpectatorsNumberChanged() {
 		int size = spectators.size();
 		for (ClientHandler player : players)
-			player.notifySpectatorsNumberChanged(size);
+			if (player != null)
+				player.notifySpectatorsNumberChanged(size);
 		for (ClientHandler spectator : spectators)
 			spectator.notifySpectatorsNumberChanged(size);
 	}
@@ -80,14 +81,16 @@ public class ServerGameRoom {
 	private synchronized void notifyGameStatusChanged() {
 		List<String> report = getGameStatus();
 		for (ClientHandler p : players)
-			p.notifyGameStatusChanged(report);
+			if (p != null)
+				p.notifyGameStatusChanged(report);
 		for (ClientHandler s : spectators)
 			s.notifyGameStatusChanged(report);
 	}
 
 	private synchronized void notifyGameStarted() {
 		for (ClientHandler p : players)
-			p.notifyGameStarted();
+			if (p != null)
+				p.notifyGameStarted();
 		for (ClientHandler s : spectators)
 			s.notifyGameStarted();
 	}
@@ -217,7 +220,8 @@ public class ServerGameRoom {
 
 	private synchronized void notifyPlayerTurn(String name) {
 		for (ClientHandler p: players)
-			p.notifyPlayerTurn(name);
+			if (p != null)
+				p.notifyPlayerTurn(name);
 		for (ClientHandler s: spectators)
 			s.notifyPlayerTurn(name);
 	}
@@ -273,7 +277,7 @@ public class ServerGameRoom {
 				for (int j = 0; j < horses.length; j++) {
 					int ycase = ((15 * i + horses[j]) % 60);
 					if (ycase == xcase)
-						players.get(i).getPlayer().moveHorse(j, 0);
+						players.get(i).getPlayer().setHorse(j, 0);
 				}
 			}
 		}

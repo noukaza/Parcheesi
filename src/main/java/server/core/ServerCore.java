@@ -14,7 +14,6 @@ public class ServerCore implements Runnable {
 
 	private int port;
 	private ServerSocket serverSocket;
-	private ServerFrame serverFrame;
 
 	private boolean stop;
 

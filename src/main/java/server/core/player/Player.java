@@ -98,6 +98,10 @@ public class Player {
 		return horses;
 	}
 
+	public void setHorse(int index, int value) {
+		this.horses[index] = value;
+	}
+
 	public ServerGameRoom getRoom() {
 		return room;
 	}
