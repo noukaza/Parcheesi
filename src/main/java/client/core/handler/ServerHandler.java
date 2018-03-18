@@ -3,6 +3,7 @@ package client.core.handler;
 import client.core.gui.GameFrame;
 import client.core.handler.io.ServerInput;
 import client.core.handler.io.ServerOutput;
+import client.core.util.event.ClientModelEvent;
 import server.core.util.protocol.ServerInputProtocol;
 import server.core.util.protocol.ServerOutputProtocol;
 
@@ -11,7 +12,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInputProtocol {
+public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInputProtocol, ClientModelEvent {
 
 	private Socket socket;
 

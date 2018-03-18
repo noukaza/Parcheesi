@@ -3,107 +3,45 @@
   <ID>JAVA</ID>
   <OriginalElement />
   <nodes>
-    <node x="0.0" y="465.0">client.ClientMain</node>
-    <node x="259.0" y="200.0">client.core.gui.RoomView</node>
-    <node x="273.6544507575758" y="310.0">client.core.gui.GameFrame</node>
-    <node x="147.0" y="200.0">client.core.gui.InitView</node>
-    <node x="301.0312026515152" y="80.0">client.core.handler.ServerHandler</node>
-    <node x="329.41463068181815" y="390.0">client.core.ClientCore</node>
-    <node x="329.1978693181818" y="0.0">client.core.handler.io.ClientInput</node>
-    <node x="190.1978693181818" y="0.0">client.core.handler.io.ClientOutput</node>
-    <node x="0.0" y="200.0">client.core.gui.NavigatorView</node>
+    <node x="459.25" y="79.0">client.core.handler.io.ServerOutput</node>
+    <node x="209.99999999999997" y="0.0">client.core.util.event.ClientModelEvent</node>
+    <node x="167.0" y="227.0">client.ClientMain</node>
+    <node x="0.0" y="153.0">client.core.gui.ConnectionLayout</node>
+    <node x="397.0" y="153.0">client.core.gui.GameFrame</node>
+    <node x="330.0" y="227.0">client.core.gui.RoomView</node>
+    <node x="0.0" y="227.0">client.core.handler.io.ServerInput</node>
+    <node x="0.0" y="0.0">server.core.util.protocol.ServerOutputProtocol</node>
+    <node x="162.0" y="301.0">client.core.gui.InitView</node>
+    <node x="222.99999999999997" y="79.0">client.core.handler.ServerHandler</node>
+    <node x="0.0" y="301.0">client.core.ClientCore</node>
+    <node x="394.0" y="0.0">server.core.util.protocol.ServerInputProtocol</node>
+    <node x="210.0" y="153.0">client.core.gui.NavigatorView</node>
   </nodes>
   <notes />
   <edges>
-    <edge source="client.core.gui.GameFrame" target="client.core.handler.ServerHandler">
-      <point x="51.30000000000001" y="-15.0" />
-      <point x="381.9544507575757" y="290.0" />
-      <point x="409.5" y="290.0" />
-      <point x="409.5" y="150.0" />
-      <point x="396.84938446969704" y="150.0" />
-      <point x="33.81818181818187" y="15.0" />
+    <edge source="client.core.handler.ServerHandler" target="client.core.util.event.ClientModelEvent">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
     </edge>
-    <edge source="client.core.gui.GameFrame" target="client.core.gui.InitView">
-      <point x="-17.100000000000023" y="-15.0" />
-      <point x="313.55445075757575" y="260.0" />
-      <point x="216.0" y="260.0" />
-      <point x="23.0" y="15.0" />
+    <edge source="client.core.handler.ServerHandler" target="server.core.util.protocol.ServerOutputProtocol">
+      <point x="-46.0" y="-14.5" />
+      <point x="245.99999999999997" y="54.0" />
+      <point x="95.0" y="54.0" />
+      <point x="0.0" y="14.5" />
     </edge>
-    <edge source="client.core.gui.GameFrame" target="client.core.gui.RoomView">
-      <point x="-5.699999999999989" y="-15.0" />
-      <point x="324.9544507575757" y="250.0" />
-      <point x="285.75" y="250.0" />
-      <point x="-26.75" y="15.0" />
+    <edge source="client.core.handler.ServerHandler" target="server.core.util.protocol.ServerInputProtocol">
+      <point x="46.0" y="-14.5" />
+      <point x="338.0" y="54.0" />
+      <point x="438.25" y="54.0" />
+      <point x="-44.25" y="14.5" />
     </edge>
-    <edge source="client.core.handler.io.ClientInput" target="client.core.handler.ServerHandler">
-      <point x="13.625" y="15.0" />
-      <point x="397.3228693181818" y="60.0" />
-      <point x="394.0312026515152" y="60.0" />
-      <point x="31.0" y="-15.0" />
-    </edge>
-    <edge source="client.core.gui.InitView" target="client.core.handler.ServerHandler">
-      <point x="0.0" y="-15.0" />
-      <point x="193.0" y="160.0" />
-      <point x="329.21302083333336" y="160.0" />
-      <point x="-33.81818181818181" y="15.0" />
-    </edge>
-    <edge source="client.core.handler.ServerHandler" target="client.core.handler.io.ClientInput">
-      <point x="-10.333333333333314" y="-15.0" />
-      <point x="352.69786931818186" y="60.0" />
-      <point x="342.8228693181818" y="60.0" />
-      <point x="-40.875" y="15.0" />
-    </edge>
-    <edge source="client.core.ClientCore" target="client.core.gui.GameFrame">
-      <point x="-39.75" y="-15.0" />
-      <point x="342.66463068181815" y="370.0" />
-      <point x="302.1544507575758" y="370.0" />
-      <point x="-28.5" y="15.0" />
-    </edge>
-    <edge source="client.core.gui.NavigatorView" target="client.core.handler.ServerHandler">
-      <point x="31.75" y="-15.0" />
-      <point x="95.25" y="150.0" />
-      <point x="317.94029356060605" y="150.0" />
-      <point x="-45.09090909090912" y="15.0" />
-    </edge>
-    <edge source="client.core.handler.ServerHandler" target="client.core.gui.GameFrame">
-      <point x="0.0" y="15.0" />
-      <point x="363.0312026515152" y="180.0" />
-      <point x="376.5" y="180.0" />
-      <point x="376.5" y="260.0" />
-      <point x="347.7544507575757" y="260.0" />
-      <point x="17.099999999999966" y="-15.0" />
-    </edge>
-    <edge source="client.core.ClientCore" target="client.core.handler.ServerHandler">
-      <point x="39.74999999999999" y="-15.0" />
-      <point x="422.16463068181815" y="370.0" />
-      <point x="433.28517992424247" y="370.0" />
-      <point x="433.28517992424247" y="130.0" />
-      <point x="419.39483901515155" y="130.0" />
-      <point x="56.363636363636374" y="15.0" />
-    </edge>
-    <edge source="client.core.handler.ServerHandler" target="client.core.handler.io.ClientOutput">
-      <point x="-51.666666666666686" y="-15.0" />
-      <point x="311.3645359848485" y="60.0" />
-      <point x="219.9478693181818" y="60.0" />
-      <point x="-29.75" y="15.0" />
-    </edge>
-    <edge source="client.core.gui.GameFrame" target="client.core.gui.NavigatorView">
-      <point x="-51.30000000000001" y="-15.0" />
-      <point x="279.3544507575757" y="290.0" />
-      <point x="31.75" y="290.0" />
-      <point x="-31.75" y="15.0" />
-    </edge>
-    <edge source="client.core.gui.RoomView" target="client.core.handler.ServerHandler">
-      <point x="-26.75" y="-15.0" />
-      <point x="285.75" y="170.0" />
-      <point x="340.4857481060606" y="170.0" />
-      <point x="-22.54545454545456" y="15.0" />
+    <edge source="client.core.handler.io.ServerOutput" target="server.core.util.protocol.ServerInputProtocol">
+      <point x="0.0" y="-14.5" />
+      <point x="44.25000000000006" y="14.5" />
     </edge>
   </edges>
-  <settings layout="Hierarchic Group" zoom="0.6000000000000001" x="200.9999999999999" y="256.99999999999994" />
-  <SelectedNodes>
-    <node>client.ClientMain</node>
-  </SelectedNodes>
+  <settings layout="Hierarchic Group" zoom="0.898876404494382" x="265.5" y="301.5" />
+  <SelectedNodes />
   <Categories />
   <SCOPE>All</SCOPE>
   <VISIBILITY>public</VISIBILITY>
