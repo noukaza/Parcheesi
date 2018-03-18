@@ -5,11 +5,11 @@ import server.core.util.protocol.ServerInputProtocol;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-public class ClientOutput implements ServerInputProtocol {
+public class ServerOutput implements ServerInputProtocol {
 
     private PrintWriter out;
 
-    public ClientOutput(OutputStream outputStream) {
+	public ServerOutput(OutputStream outputStream) {
         this.out = new PrintWriter(outputStream, true);
     }
 

@@ -1,14 +1,14 @@
 package client.core.handler.io;
 
 import client.core.handler.ServerHandler;
-import client.core.util.exeption.ClientProtocolException;
+import client.core.util.exeption.ServerProtocolException;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-public class ClientInput {
+public class ServerInput {
 
     private static final String NAME_OK = "NAME OK";
     private static final String NAME_BAD = "NAME BAD";
@@ -34,7 +34,7 @@ public class ClientInput {
     private boolean connected;
 	private ServerHandler handler;
 
-	public ClientInput(ServerHandler handler, InputStream in) {
+	public ServerInput(ServerHandler handler, InputStream in) {
         this.in = in;
         this.connected = false;
 		this.handler = handler;
@@ -130,7 +130,7 @@ public class ClientInput {
 		                    handler.serverOff();
 		                    break;
                         default:
-                            throw new ClientProtocolException("Invalid Commande :" + header);
+	                        throw new ServerProtocolException("Invalid Commande :" + header);
                     }
                 }
 

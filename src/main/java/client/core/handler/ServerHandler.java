@@ -1,8 +1,8 @@
 package client.core.handler;
 
 import client.core.gui.GameFrame;
-import client.core.handler.io.ClientInput;
-import client.core.handler.io.ClientOutput;
+import client.core.handler.io.ServerInput;
+import client.core.handler.io.ServerOutput;
 import server.core.util.protocol.ServerInputProtocol;
 import server.core.util.protocol.ServerOutputProtocol;
 
@@ -12,10 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInputProtocol {
+
 	private Socket socket;
 
-	private ClientInput clientInput;
-	private ClientOutput clientOutput;
+	private ServerInput serverInput;
+	private ServerOutput serverOutput;
 
 	private GameFrame model;
 
@@ -24,7 +25,6 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 	private int[] horses;
 
 	private boolean spectator = false;
-	private boolean admine = false;
 
 	public ServerHandler(GameFrame model, Socket socket) {
 		this.socket = socket;
@@ -34,11 +34,10 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 
 	public void run() {
 		try (Socket s = socket) {
-			clientInput = new ClientInput(this, s.getInputStream());
-			clientOutput = new ClientOutput(s.getOutputStream());
-			clientInput.doRun();
+			serverInput = new ServerInput(this, s.getInputStream());
+			serverOutput = new ServerOutput(s.getOutputStream());
+			serverInput.doRun();
 		} catch (Exception e) {
-			e.printStackTrace();
 			finish();
 		}
 	}
@@ -51,7 +50,7 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 	@Override
 	public void nameOk() {
 		playerName = tmp_playerName;
-		model.serverAcceptedName();
+		model.serverAcceptedName(playerName);
 	}
 
 	@Override
@@ -61,14 +60,11 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 
 	@Override
 	public void roomCreated() {
-		admine = true;
-		//todo code here
 	}
 
 	@Override
 	public void roomClosed() {
 		spectator = false;
-		admine = false;
 		model.serverClosedRoom();
 	}
 
@@ -177,67 +173,62 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 	@Override
 	public void commandeName(String name) {
 		tmp_playerName = name;
-		clientOutput.commandeName(name);
+		serverOutput.commandeName(name);
 	}
 
 	@Override
 	public void commandeRoomList() {
-		clientOutput.commandeRoomList();
+		serverOutput.commandeRoomList();
 	}
 
 	@Override
 	public void commandeCreateRoom(String name) {
-		clientOutput.commandeCreateRoom(name);
+		serverOutput.commandeCreateRoom(name);
 	}
 
 	@Override
 	public void commandeEnterRoom(String name) {
-		clientOutput.commandeEnterRoom(name);
+		serverOutput.commandeEnterRoom(name);
 	}
 
 	@Override
 	public void commandePlayDice() {
-		clientOutput.commandePlayDice();
+		serverOutput.commandePlayDice();
 	}
 
 	@Override
 	public void commandeMoveTheHorse(int horse) {
-		clientOutput.commandeMoveTheHorse(horse);
+		serverOutput.commandeMoveTheHorse(horse);
 	}
 
 	@Override
 	public void commandePassTurn() {
-		clientOutput.commandePassTurn();
+		serverOutput.commandePassTurn();
 	}
 
 	@Override
 	public void commandeExitRoom() {
 		model.playerNowIsNavigator();
-		clientOutput.commandeExitRoom();
 	}
 
 	@Override
 	public void commandeDisconnect() {
-		clientOutput.commandeDisconnect();
+		serverOutput.commandeDisconnect();
 	}
 
 	@Override
 	public void commandeStartGame() {
-		clientOutput.commandeStartGame();
+		serverOutput.commandeStartGame();
 	}
 
 	@Override
 	public void commandePlayersList() {
-		clientOutput.commandePlayersList();
+		serverOutput.commandePlayersList();
 	}
 
 	@Override
 	public void commandeSpectatorsNumber() {
-		clientOutput.commandeSpectatorsNumber();
-	}
-
-	public boolean isAdmine() {
-		return admine;
+		serverOutput.commandeSpectatorsNumber();
 	}
 
 	public boolean isSpectator() {
@@ -253,7 +244,7 @@ public class ServerHandler implements Runnable, ServerOutputProtocol, ServerInpu
 	}
 
 	private void finish() {
-		clientInput.disconnect();
+		serverInput.disconnect();
 		try {
 			socket.close();
 		} catch (IOException e) {

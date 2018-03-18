@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class GameFrame extends javax.swing.JFrame {
+public class GameFrame extends JFrame {
 
 	private InitView initView;
 	private NavigatorView navigatorView;
@@ -20,6 +20,7 @@ public class GameFrame extends javax.swing.JFrame {
      * Creates new form GameFrame
      */
     public GameFrame() {
+	    super("client");
 	    initComponents();
 	    try {
 		    for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -72,8 +73,9 @@ public class GameFrame extends javax.swing.JFrame {
 		setVisible(true);
 	}
 
-	public void serverAcceptedName() {
+	public void serverAcceptedName(String name) {
 		initNavigationView();
+		setTitle(name);
 	}
 
 	private void initNavigationView() {
@@ -81,6 +83,7 @@ public class GameFrame extends javax.swing.JFrame {
 		setPreferredSize(navigatorView.getPreferredSize());
 		setContentPane(navigatorView);
 		pack();
+		roomView = null;
 		initView = null;
 	}
 
@@ -107,13 +110,13 @@ public class GameFrame extends javax.swing.JFrame {
 	}
 
 	public void serverAllowedEnteringRoom() {
-		roomView = new RoomView(handler);
-		setPreferredSize(roomView.getPreferredSize());
-		setContentPane(roomView);
+		this.roomView = new RoomView(handler);
+		setPreferredSize(this.roomView.getPreferredSize());
+		setContentPane(this.roomView);
 		pack();
 		navigatorView = null;
 		if (handler.isSpectator()) {
-			roomView.spectatorMode();
+			this.roomView.spectatorMode();
 		}
 	}
 

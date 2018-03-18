@@ -222,7 +222,16 @@ public class ClientHandler implements Runnable, ServerInputProtocol, ServerModel
 	@Override
 	public void notifyShutdownRequested() {
 		clientOutput.serverOff();
-		this.finish();
+		clientInput.stop();
+		try {
+			socket.close();
+		} catch (IOException e) {
+			serverLogger.systemMessage(e.getMessage());
+		}
+		String name = "unknown";
+		if (player != null)
+			name = getPlayer().getName();
+		serverLogger.clientDisconnected(socket.getLocalSocketAddress().toString(), name);
 	}
 
 	@Override

@@ -1066,7 +1066,7 @@ public class RoomView extends JPanel {
 		for (JToggleButton cas : map)
 			cas.setEnabled(true);
 
-
+		moveHorse_btn.setText("Move / Pass");
 		this.bases = new ArrayList<>();
 		this.laststeps = new ArrayList<>();
 		this.endStatus = Arrays.asList(savedp0_jlb, savedp1_jlb, savedp2_jlb, savedp3_jlb);
@@ -1128,10 +1128,6 @@ public class RoomView extends JPanel {
 				for (int i = 0; i < horses.length; i++)
 					if (horses[i] > 0 && horses[i] <= 66)
 						hrs.add("Horse : " + i);
-				if (hrs.isEmpty())
-					moveHorse_btn.setText("Pass my turn");
-				else
-					moveHorse_btn.setText("Move horse");
 				horseOptionList_jl.setModel(new AbstractListModel<String>() {
 
 					public int getSize() {
@@ -1143,6 +1139,7 @@ public class RoomView extends JPanel {
 					}
 				});
 			} else {
+
 				int[] horses = handler.getHorses();
 				ArrayList<String> hrs = new ArrayList<>();
 				for (int i = 0; i < horses.length; i++)
@@ -1190,8 +1187,10 @@ public class RoomView extends JPanel {
 		diceResult_jlb.setText(name + " Turn !");
 		if (name.equals("Your")) {
 			dice_btn.setEnabled(true);
+			moveHorse_btn.setEnabled(false);
 		} else {
 			dice_btn.setEnabled(false);
+			moveHorse_btn.setEnabled(false);
 		}
 	}
 

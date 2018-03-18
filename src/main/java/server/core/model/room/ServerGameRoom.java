@@ -123,18 +123,27 @@ public class ServerGameRoom {
 
 			if (gameStarted) {
 				index = players.indexOf(clientHandler);
-				players.insertElementAt(null, index);
+				players.set(index, null);
 			} else {
 				players.remove(admine);
+				if (players.size() == 0) {
+					clientHandler.setClientState(ClientHandler.ClientState.ST_NAVIGATOR);
+					serverModel.removeRoom(name, this);
+					return;
+				}
 			}
 
-			ClientHandler chosen;
-			do {
-				admine.getPlayer().setAdmine(false);
-				index = random.nextInt(getPLayersNumber());
-				chosen = players.get(index);
-			} while (chosen == null);
+			admine.getPlayer().setAdmine(false);
 
+			ClientHandler chosen;
+
+			index = turn;
+
+			do {
+				index = (index + 1) % players.size();
+			} while (players.get(index) == null);
+
+			chosen = players.get(index);
 			this.admine = chosen;
 			chosen.getPlayer().setAdmine(true);
 
@@ -144,20 +153,22 @@ public class ServerGameRoom {
 
 			if (gameStarted) {
 				index = players.indexOf(clientHandler);
-				players.insertElementAt(null, index);
+				players.set(index, null);
 			} else {
 				players.remove(clientHandler);
 			}
 		}
 
-		notifyPlayersListChanged();
 		clientHandler.setClientState(ClientHandler.ClientState.ST_NAVIGATOR);
-		if (players.isEmpty())
-			serverModel.removeRoom(name, this);
-		else if (getPLayersNumber() == 1) {
+		notifyPlayersListChanged();
+
+		if (gameStarted && getPLayersNumber() == 1) {
 			notifyWeHaveAWinner(getLastPlayer());
-		} else
+		} else if (players.isEmpty()) {
+			serverModel.removeRoom(name, this);
+		} else {
 			serverModel.notifyRoomStatusChanged();
+		}
 	}
 
 	private synchronized String getLastPlayer() {
@@ -178,6 +189,7 @@ public class ServerGameRoom {
 
 	public synchronized void removeSpectator(ClientHandler clientHandler) {
 		if (spectators.remove(clientHandler)) {
+			clientHandler.setClientState(ClientHandler.ClientState.ST_NAVIGATOR);
 			notifySpectatorsNumberChanged();
 		}
 	}
@@ -188,7 +200,8 @@ public class ServerGameRoom {
 		player.getPlayer().wontRollDice();
 		player.getPlayer().willPlay();
 		for (ClientHandler p : players)
-			p.notifyDiceResult(name, value);
+			if (p != null)
+				p.notifyDiceResult(name, value);
 		for (ClientHandler s : spectators)
 			s.notifyDiceResult(name, value);
 		return value;
@@ -204,9 +217,8 @@ public class ServerGameRoom {
 
 	public synchronized boolean startGame(ClientHandler player) {
 		int MIN_PLAYERS = 2;
-		if (player.equals(admine) && players.size() >= MIN_PLAYERS)
-		{
-			for (ClientHandler p: players)
+		if (player.equals(admine) && players.size() >= MIN_PLAYERS) {
+			for (ClientHandler p : players)
 				p.getPlayer().init();
 			gameStarted = true;
 			notifyGameStarted();
@@ -219,10 +231,10 @@ public class ServerGameRoom {
 	}
 
 	private synchronized void notifyPlayerTurn(String name) {
-		for (ClientHandler p: players)
+		for (ClientHandler p : players)
 			if (p != null)
 				p.notifyPlayerTurn(name);
-		for (ClientHandler s: spectators)
+		for (ClientHandler s : spectators)
 			s.notifyPlayerTurn(name);
 	}
 
@@ -252,9 +264,9 @@ public class ServerGameRoom {
 			checkCrossedHorses(players.indexOf(client), client.getPlayer().getHorse(index));
 			if (dice != 6) {
 				client.getPlayer().wontPlay();
-				turn = (turn + 1) % players.size();
-				if (players.get(turn) == null)
+				do {
 					turn = (turn + 1) % players.size();
+				} while (players.get(turn) == null);
 				players.get(turn).getPlayer().willRollDice();
 				notifyGameStatusChanged();
 				notifyPlayerTurn(players.get(turn).getPlayer().getName());
@@ -299,11 +311,14 @@ public class ServerGameRoom {
 
 	private synchronized int doWeHaveAWinner() {
 		for (int i = 0; i < players.size(); i++) {
-			Player player = players.get(i).getPlayer();
-			if (player.won())
-				return i;
+			ClientHandler client = players.get(i);
+			if (client != null) {
+				Player player = client.getPlayer();
+				if (player.won())
+					return i;
+			}
 		}
-		return -1;
+		return - 1;
 	}
 
 	public synchronized int getSpectatorsNumber() {
@@ -317,9 +332,9 @@ public class ServerGameRoom {
 	public void playerPassedTurn() {
 		players.get(turn).getPlayer().wontPlay();
 		players.get(turn).getPlayer().wontRollDice();
-		turn = (turn + 1) % players.size();
-		if (players.get(turn) == null)
+		do {
 			turn = (turn + 1) % players.size();
+		} while (players.get(turn) == null);
 		players.get(turn).getPlayer().willRollDice();
 		notifyPlayerTurn(players.get(turn).getPlayer().getName());
 	}
